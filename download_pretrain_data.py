@@ -3,19 +3,14 @@
 Download Pre-training Data from Hugging Face Hub
 =================================================
 
-Downloads the processed 50B token pre-training mix from HF Hub.
+Downloads the processed pre-training mix from HF Hub.
 Similar to the fineweb10B download script but for our custom mix.
 
 Usage:
-    python download_pretrain_data.py                    # Download all (50B tokens)
-    python download_pretrain_data.py --tokens 10B      # Download ~10B tokens
-    python download_pretrain_data.py --edu-only        # Only FineWeb-EDU
-    python download_pretrain_data.py --source stack    # Only code
-    
-Data mix (default):
-    - 35B tokens: FineWeb-EDU (educational web content)
-    - 10B tokens: The Stack v2 (code) 
-    - 5B tokens:  RedPajama arXiv (scientific papers)
+    python download_pretrain_data.py --repo username/dataset        # Download all
+    python download_pretrain_data.py --repo username/dataset --tokens 10B  # Download ~10B tokens
+    python download_pretrain_data.py --repo username/dataset --val-only    # Just validation
+    python download_pretrain_data.py --repo username/dataset --list        # List available shards
 """
 
 import os
@@ -26,12 +21,12 @@ from pathlib import Path
 from huggingface_hub import hf_hub_download, list_repo_files
 
 
-# Configure your HF repo here
-HF_REPO_ID = "your-username/pretrain-50B-gpt2"  # Change this!
-LOCAL_DIR = os.path.join(os.path.dirname(__file__), 'pretrain_data')
+# Default config - override with --repo
+DEFAULT_REPO_ID = "s-maddrellmander/idlemachines-50B"
+DEFAULT_LOCAL_DIR = os.path.join(os.path.dirname(__file__), 'data', 'pretrain')
 
 
-def get_file(fname, repo_id=HF_REPO_ID, local_dir=LOCAL_DIR):
+def get_file(fname, repo_id, local_dir):
     """Download a single file from HF Hub if not already present."""
     local_path = os.path.join(local_dir, fname)
     if not os.path.exists(local_path):
@@ -47,131 +42,63 @@ def get_file(fname, repo_id=HF_REPO_ID, local_dir=LOCAL_DIR):
     return local_path
 
 
-def list_shards(repo_id=HF_REPO_ID, prefix=None):
+def list_shards(repo_id):
     """List all shard files in the HF repo."""
     try:
         files = list_repo_files(repo_id, repo_type="dataset")
         shards = [f for f in files if f.endswith('.bin')]
-        if prefix:
-            shards = [f for f in shards if f.startswith(prefix)]
         return sorted(shards)
     except Exception as e:
         print(f"Error listing repo files: {e}")
         return []
 
 
-def download_source(source_name, max_shards=None, repo_id=HF_REPO_ID, local_dir=LOCAL_DIR):
+def download_all(repo_id, local_dir, max_shards=None, train_only=False, val_only=False):
     """
-    Download shards for a specific source.
+    Download shards from the repo.
     
     Args:
-        source_name: 'fineweb_edu', 'stack_v2', or 'arxiv'
-        max_shards: Maximum number of shards to download (None = all)
+        repo_id: HuggingFace repo ID
+        local_dir: Local directory to save files
+        max_shards: Maximum number of train shards to download (None = all)
+        train_only: Only download train shards
+        val_only: Only download validation shards
     """
-    prefix_map = {
-        'fineweb_edu': 'fineweb_edu/',
-        'edu': 'fineweb_edu/',
-        'stack_v2': 'stack_v2/',
-        'stack': 'stack_v2/',
-        'code': 'stack_v2/',
-        'arxiv': 'arxiv/',
-    }
+    Path(local_dir).mkdir(parents=True, exist_ok=True)
     
-    prefix = prefix_map.get(source_name.lower())
-    if not prefix:
-        print(f"Unknown source: {source_name}")
-        print(f"Available: {list(prefix_map.keys())}")
-        return []
+    # Download manifest first if it exists
+    try:
+        get_file("manifest.json", repo_id, local_dir)
+    except:
+        print("No manifest found, continuing...")
     
-    shards = list_shards(repo_id, prefix)
+    # List all shards
+    all_shards = list_shards(repo_id)
+    train_shards = sorted([s for s in all_shards if s.startswith('train_')])
+    val_shards = sorted([s for s in all_shards if s.startswith('val_')])
     
-    if max_shards:
-        shards = shards[:max_shards]
+    print(f"\nFound {len(train_shards)} train shards, {len(val_shards)} val shards")
     
-    print(f"\nDownloading {len(shards)} shards for {source_name}...")
+    # Determine what to download
+    shards_to_download = []
+    
+    if val_only:
+        shards_to_download = val_shards
+    elif train_only:
+        shards_to_download = train_shards[:max_shards] if max_shards else train_shards
+    else:
+        # Both train and val
+        train_subset = train_shards[:max_shards] if max_shards else train_shards
+        shards_to_download = train_subset + val_shards
+    
+    print(f"Downloading {len(shards_to_download)} shards...")
     
     downloaded = []
-    for shard in shards:
+    for shard in shards_to_download:
         path = get_file(shard, repo_id, local_dir)
         downloaded.append(path)
     
     return downloaded
-
-
-def download_all(max_tokens=None, repo_id=HF_REPO_ID, local_dir=LOCAL_DIR):
-    """
-    Download all data up to max_tokens.
-    
-    Token distribution per source:
-    - fineweb_edu: 35B (350 shards @ 100M each)
-    - stack_v2: 10B (100 shards)
-    - arxiv: 5B (50 shards)
-    """
-    Path(local_dir).mkdir(parents=True, exist_ok=True)
-    
-    # Download manifest first
-    try:
-        get_file("manifest.json", repo_id, local_dir)
-    except:
-        print("No manifest found, downloading all shards...")
-    
-    # Calculate shard limits based on max_tokens
-    # Each shard is ~100M tokens
-    tokens_per_shard = 100_000_000
-    
-    if max_tokens:
-        # Proportional distribution: 70% edu, 20% code, 10% arxiv
-        edu_tokens = int(max_tokens * 0.70)
-        code_tokens = int(max_tokens * 0.20)
-        arxiv_tokens = int(max_tokens * 0.10)
-        
-        edu_shards = max(1, edu_tokens // tokens_per_shard)
-        code_shards = max(1, code_tokens // tokens_per_shard)
-        arxiv_shards = max(1, arxiv_tokens // tokens_per_shard)
-    else:
-        edu_shards = None  # All
-        code_shards = None
-        arxiv_shards = None
-    
-    downloaded = []
-    
-    print("="*60)
-    print("Downloading Pre-training Data")
-    print("="*60)
-    
-    # Download each source
-    downloaded.extend(download_source('fineweb_edu', edu_shards, repo_id, local_dir))
-    downloaded.extend(download_source('stack_v2', code_shards, repo_id, local_dir))
-    downloaded.extend(download_source('arxiv', arxiv_shards, repo_id, local_dir))
-    
-    print(f"\n{'='*60}")
-    print(f"Download complete: {len(downloaded)} shards")
-    print(f"Location: {local_dir}")
-    print(f"{'='*60}")
-    
-    return downloaded
-
-
-def download_validation(repo_id=HF_REPO_ID, local_dir=LOCAL_DIR):
-    """Download just the validation shards (for quick testing)."""
-    Path(local_dir).mkdir(parents=True, exist_ok=True)
-    
-    shards = list_shards(repo_id)
-    val_shards = [s for s in shards if 'val' in s.lower()]
-    
-    if not val_shards:
-        # If no dedicated val shards, grab first shard of each source
-        val_shards = []
-        for source in ['fineweb_edu', 'stack_v2', 'arxiv']:
-            source_shards = [s for s in shards if source in s]
-            if source_shards:
-                val_shards.append(source_shards[0])
-    
-    print(f"Downloading {len(val_shards)} validation shards...")
-    for shard in val_shards:
-        get_file(shard, repo_id, local_dir)
-    
-    return val_shards
 
 
 def parse_tokens(s):
@@ -191,17 +118,18 @@ def parse_tokens(s):
 
 def main():
     parser = argparse.ArgumentParser(description='Download pre-training data from HF Hub')
-    parser.add_argument('--repo', type=str, default=HF_REPO_ID,
-                        help=f'HuggingFace repo ID (default: {HF_REPO_ID})')
-    parser.add_argument('--output-dir', type=str, default=LOCAL_DIR,
-                        help=f'Local directory (default: {LOCAL_DIR})')
+    parser.add_argument('--repo', type=str, default=DEFAULT_REPO_ID,
+                        help=f'HuggingFace repo ID (default: {DEFAULT_REPO_ID})')
+    parser.add_argument('--output-dir', type=str, default=DEFAULT_LOCAL_DIR,
+                        help=f'Local directory (default: {DEFAULT_LOCAL_DIR})')
     parser.add_argument('--tokens', type=str, default=None,
-                        help='Max tokens to download (e.g., 10B, 50B). Default: all')
-    parser.add_argument('--source', type=str, default=None,
-                        choices=['edu', 'fineweb_edu', 'code', 'stack', 'stack_v2', 'arxiv', 'all'],
-                        help='Download specific source only')
+                        help='Max tokens to download (e.g., 10B, 50B). Assumes 100M per shard.')
+    parser.add_argument('--shards', type=int, default=None,
+                        help='Max number of train shards to download')
     parser.add_argument('--val-only', action='store_true',
-                        help='Download validation shards only (quick test)')
+                        help='Download validation shards only')
+    parser.add_argument('--train-only', action='store_true',
+                        help='Download training shards only (skip validation)')
     parser.add_argument('--list', action='store_true',
                         help='List available shards without downloading')
     
@@ -210,20 +138,46 @@ def main():
     if args.list:
         print(f"Listing shards in {args.repo}...")
         shards = list_shards(args.repo)
-        for s in shards:
+        train_shards = [s for s in shards if s.startswith('train_')]
+        val_shards = [s for s in shards if s.startswith('val_')]
+        
+        print(f"\nTrain shards ({len(train_shards)}):")
+        for s in train_shards:
             print(f"  {s}")
+        
+        print(f"\nVal shards ({len(val_shards)}):")
+        for s in val_shards:
+            print(f"  {s}")
+        
         print(f"\nTotal: {len(shards)} shards")
         return
     
-    if args.val_only:
-        download_validation(args.repo, args.output_dir)
-        return
+    # Calculate max_shards from tokens if specified
+    max_shards = args.shards
+    if args.tokens:
+        tokens = parse_tokens(args.tokens)
+        # Assume 100M tokens per shard
+        max_shards = tokens // 100_000_000
+        print(f"Downloading up to {max_shards} shards for {args.tokens} tokens")
     
-    if args.source and args.source != 'all':
-        download_source(args.source, repo_id=args.repo, local_dir=args.output_dir)
-    else:
-        max_tokens = parse_tokens(args.tokens)
-        download_all(max_tokens, args.repo, args.output_dir)
+    print("="*60)
+    print(f"Downloading Pre-training Data")
+    print(f"Repo: {args.repo}")
+    print(f"Output: {args.output_dir}")
+    print("="*60)
+    
+    downloaded = download_all(
+        repo_id=args.repo,
+        local_dir=args.output_dir,
+        max_shards=max_shards,
+        train_only=args.train_only,
+        val_only=args.val_only,
+    )
+    
+    print(f"\n{'='*60}")
+    print(f"Download complete: {len(downloaded)} shards")
+    print(f"Location: {args.output_dir}")
+    print(f"{'='*60}")
 
 
 if __name__ == "__main__":

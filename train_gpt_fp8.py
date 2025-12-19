@@ -734,10 +734,10 @@ if __name__ == "__main__":
     
     # Data
     parser.add_argument("--train-data", type=str, 
-                        default="data/fineweb10B/fineweb_train_*.bin",
+                        default="data/pretrain/train_*.bin",
                         help="Training data pattern")
     parser.add_argument("--val-data", type=str,
-                        default="data/fineweb10B/fineweb_val_*.bin", 
+                        default="data/pretrain/val_*.bin", 
                         help="Validation data pattern")
     
     # Validation
