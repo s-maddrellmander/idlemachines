@@ -424,10 +424,13 @@ def train(args):
     print(f"\n{'Configuration':-^50}")
     print(f"Device: {torch.cuda.get_device_name()}")
     print(f"Mode: {mode_str}")
-    print(f"Steps: {args.steps}")
-    print(f"Batch size: {args.batch_size}")
+    print(f"Steps: {args.steps} (optimizer steps)")
+    print(f"Micro batch size: {args.batch_size}")
+    print(f"Gradient accumulation: {args.grad_accum}")
+    print(f"Effective batch size: {args.batch_size * args.grad_accum} sequences")
     print(f"Sequence length: {args.seq_len}")
-    print(f"Learning rate: {args.lr} (warmup: {args.warmup_steps}, min: {args.min_lr})")
+    print(f"Tokens per step: {args.batch_size * args.grad_accum * args.seq_len:,}")
+    print(f"Learning rate: {args.lr} (warmup: {args.warmup_steps} steps, min: {args.min_lr})")
     print(f"Validation every: {args.val_every} steps")
     
     # Create model config
@@ -508,10 +511,11 @@ def train(args):
         val_loader = train_loader  # Use same for testing
     
     # Calculate tokens per step and total
-    tokens_per_step = args.batch_size * args.seq_len
+    # tokens_per_step = effective batch size * seq_len = micro_batch * grad_accum * seq_len
+    tokens_per_step = args.batch_size * args.grad_accum * args.seq_len
     total_tokens = args.steps * tokens_per_step
-    print(f"Tokens per step: {tokens_per_step:,}")
-    print(f"Total tokens: {total_tokens/1e6:.1f}M")
+    print(f"Tokens per optimizer step: {tokens_per_step:,}")
+    print(f"Total tokens: {total_tokens/1e6:.1f}M ({total_tokens/1e9:.2f}B)")
     
     # Optimizer
     optimizer = torch.optim.AdamW(
@@ -553,7 +557,7 @@ def train(args):
             'tokens_per_sec', 'step_time_ms', 'train_time_ms',
             'total_tokens', 'elapsed_time', 'train_time_total',
             'lr', 'grad_norm',
-            'mode', 'model_size', 'batch_size', 'num_params'
+            'mode', 'model_size', 'batch_size', 'grad_accum', 'effective_batch', 'num_params'
         ])
     else:
         print(f"  Appending to existing log file")
@@ -573,6 +577,9 @@ def train(args):
     start_time = time.time()
     train_time_total = 0.0  # Only training time, excludes validation
     
+    # For gradient accumulation, we track accumulated loss
+    accumulated_loss = 0.0
+    
     for step in range(start_step + 1, args.steps + 1):
         step_start = time.time()
         
@@ -581,14 +588,21 @@ def train(args):
         for param_group in optimizer.param_groups:
             param_group['lr'] = lr
         
-        # Forward pass
-        x, y = train_loader.next_batch()
+        # Gradient accumulation loop
+        accumulated_loss = 0.0
+        for micro_step in range(args.grad_accum):
+            x, y = train_loader.next_batch()
+            
+            with amp_ctx:
+                _, loss = model(x, y)
+                # Scale loss by accumulation steps for correct gradient averaging
+                scaled_loss = loss / args.grad_accum
+            
+            scaled_loss.backward()
+            accumulated_loss += loss.item()
         
-        with amp_ctx:
-            _, loss = model(x, y)
-        
-        # Backward pass
-        loss.backward()
+        # Average the accumulated loss for logging
+        loss_val = accumulated_loss / args.grad_accum
         
         # Compute gradient norm before clipping
         grad_norm = compute_gradient_norm(model)
@@ -607,7 +621,6 @@ def train(args):
         # Metrics
         total_tokens_processed += tokens_per_step
         tokens_per_sec = tokens_per_step / step_time
-        loss_val = loss.item()
         perplexity = math.exp(loss_val) if loss_val < 20 else float('inf')
         elapsed = time.time() - start_time
         
@@ -655,6 +668,8 @@ def train(args):
             mode_str,
             args.model_size or 'custom',
             args.batch_size,
+            args.grad_accum,
+            args.batch_size * args.grad_accum,
             num_params
         ])
         
@@ -717,16 +732,18 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='FP8 Training - Full Featured')
     
     # Training params
-    parser.add_argument("--steps", type=int, default=15000, help="Training steps")
-    parser.add_argument("--batch-size", type=int, default=32, help="Batch size")
+    parser.add_argument("--steps", type=int, default=15000, help="Training steps (optimizer steps, not micro-steps)")
+    parser.add_argument("--batch-size", type=int, default=32, help="Micro batch size (sequences per forward pass)")
+    parser.add_argument("--grad-accum", type=int, default=1, help="Gradient accumulation steps")
     parser.add_argument("--seq-len", type=int, default=1024, help="Sequence length")
     
     # Learning rate
     parser.add_argument("--lr", type=float, default=6e-4, help="Max learning rate")
     parser.add_argument("--min-lr", type=float, default=6e-5, help="Min learning rate")
-    parser.add_argument("--warmup-steps", type=int, default=200, help="Warmup steps")
+    parser.add_argument("--warmup-frac", type=float, default=0.02, help="Warmup as fraction of total steps (default: 2%%)")
+    parser.add_argument("--warmup-steps", type=int, default=None, help="Warmup steps (overrides warmup-frac if set)")
     parser.add_argument("--weight-decay", type=float, default=0.1, help="Weight decay")
-    parser.add_argument("--grad-clip", type=float, default=0.5, help="Gradient clipping")
+    parser.add_argument("--grad-clip", type=float, default=1.0, help="Gradient clipping")
     
     # Model
     parser.add_argument("--model-size", type=str, default="1.5B",
@@ -759,5 +776,9 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     args.use_fp8 = not args.no_fp8
+    
+    # Compute warmup steps from fraction if not explicitly set
+    if args.warmup_steps is None:
+        args.warmup_steps = int(args.warmup_frac * args.steps)
     
     train(args)
