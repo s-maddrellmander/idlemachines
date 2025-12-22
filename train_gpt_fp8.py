@@ -268,7 +268,7 @@ class FileDataLoader:
             with open(f, "rb") as fp:
                 header = np.frombuffer(fp.read(256 * 4), dtype=np.int32)
                 if header[0] == 20240520:
-                    total_tokens += header[2]
+                    total_tokens += int(header[2])
         
         print(f"Data: {len(self.files)} shards, ~{total_tokens/1e9:.2f}B tokens total")
         self.total_tokens = total_tokens

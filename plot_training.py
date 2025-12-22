@@ -143,7 +143,7 @@ def plot_loss_curves(df, output_dir, smooth_window=50):
     ax1.set_ylabel('Training Loss')
     ax1.set_title('Training Loss vs Tokens Processed')
     ax1.legend(frameon=True, fancybox=True, shadow=True)
-    ax1.set_ylim(bottom=4, top=12)
+    ax1.set_ylim(bottom=2, top=12)
     
     # Right: Loss vs Wall Time
     ax2 = axes[1]
@@ -163,7 +163,7 @@ def plot_loss_curves(df, output_dir, smooth_window=50):
     ax2.set_ylabel('Training Loss')
     ax2.set_title('Training Loss vs Wall Time')
     ax2.legend(frameon=True, fancybox=True, shadow=True)
-    ax2.set_ylim(bottom=4, top=12)
+    ax2.set_ylim(bottom=2, top=12)
     
     plt.tight_layout()
     plt.savefig(output_dir / 'loss_curves.png', dpi=150, bbox_inches='tight')
@@ -564,7 +564,7 @@ def plot_validation_loss(df, output_dir, smooth_window=10):
     ax1.set_ylabel('Loss')
     ax1.set_title('Training vs Validation Loss')
     ax1.legend(frameon=True, fancybox=True, shadow=True)
-    ax1.set_ylim(bottom=3)
+    ax1.set_ylim(bottom=2)
     
     # Right: Validation loss comparison
     ax2 = axes[1]
