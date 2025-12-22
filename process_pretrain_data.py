@@ -384,6 +384,177 @@ class MixedDataGenerator:
 
 
 # =============================================================================
+# HuggingFace Hub Upload (with resume support)
+# =============================================================================
+
+def get_uploaded_files(api: HfApi, repo_id: str, repo_type: str = "dataset") -> set:
+    """Get set of files already in the repo."""
+    try:
+        repo_info = api.repo_info(repo_id=repo_id, repo_type=repo_type)
+        uploaded = set()
+        if hasattr(repo_info, 'siblings'):
+            for sibling in repo_info.siblings:
+                uploaded.add(sibling.rfilename)
+        return uploaded
+    except Exception as e:
+        print(f"  Warning: Could not fetch repo info: {e}")
+        return set()
+
+
+def upload_to_hub(output_dir: Path, repo_id: str, private: bool = False, batch_size: int = 5):
+    """
+    Upload processed data to HuggingFace Hub with batch commits.
+    
+    Automatically resumes if interrupted - skips already-uploaded files.
+    Batches files together to avoid hitting rate limits (128 commits/hour).
+    """
+    if not HF_UPLOAD_AVAILABLE:
+        print("Error: huggingface_hub not installed")
+        return False
+    
+    import time
+    from huggingface_hub import CommitOperationAdd
+    
+    print(f"\n{'='*70}")
+    print(f"UPLOADING TO HUGGINGFACE HUB (with resume support)")
+    print(f"Repo: {repo_id}")
+    print(f"Batch size: {batch_size} files per commit")
+    print(f"{'='*70}\n")
+    
+    api = HfApi()
+    
+    # Create repo
+    try:
+        create_repo(repo_id, repo_type="dataset", private=private, exist_ok=True)
+        print(f"✓ Repository ready: {repo_id}\n")
+    except Exception as e:
+        print(f"Error creating repo: {e}")
+        return False
+    
+    output_dir = Path(output_dir)
+    
+    # Get all bin files
+    bin_files = sorted(output_dir.glob("*.bin"))
+    print(f"Found {len(bin_files)} shard files")
+    
+    # Check what's already uploaded
+    print("Checking for already-uploaded files...")
+    uploaded = get_uploaded_files(api, repo_id)
+    print(f"  {len(uploaded)} files already in repo\n")
+    
+    # Filter to files that still need uploading
+    to_upload = [f for f in bin_files if f.name not in uploaded]
+    
+    if len(to_upload) < len(bin_files):
+        print(f"Skipping {len(bin_files) - len(to_upload)} already-uploaded files")
+        print(f"Uploading {len(to_upload)} remaining files\n")
+    
+    bin_files = to_upload
+    
+    if not bin_files:
+        print("All shard files already uploaded! ✓\n")
+    else:
+        # Split into batches
+        batches = [
+            bin_files[i:i+batch_size]
+            for i in range(0, len(bin_files), batch_size)
+        ]
+        
+        print(f"Uploading {len(bin_files)} files in {len(batches)} batches...\n")
+        
+        successful = 0
+        failed_batches = []
+        
+        for batch_num, batch in enumerate(batches, 1):
+            total_size = sum(f.stat().st_size for f in batch) / (1024 ** 2)
+            
+            print(f"  Batch {batch_num}/{len(batches)} ({len(batch)} files, {total_size:.1f}MB)")
+            print(f"    Files: {batch[0].name} → {batch[-1].name}")
+            
+            # Prepare operations
+            operations = []
+            for file_path in batch:
+                operations.append(
+                    CommitOperationAdd(
+                        path_in_repo=file_path.name,
+                        path_or_fileobj=str(file_path)
+                    )
+                )
+            
+            try:
+                commit_info = api.create_commit(
+                    repo_id=repo_id,
+                    operations=operations,
+                    commit_message=f"Add batch {batch_num}: {batch[0].name} to {batch[-1].name}",
+                    repo_type="dataset",
+                )
+                print(f"    ✓ Committed successfully")
+                successful += len(batch)
+                
+            except Exception as e:
+                print(f"    ✗ Failed: {e}")
+                failed_batches.append((batch_num, batch))
+            
+            # Rate limiting: wait between batches (except last)
+            if batch_num < len(batches):
+                print(f"    Waiting 30s before next batch...")
+                time.sleep(30)
+            print()
+        
+        # Summary
+        print(f"{'='*70}")
+        print(f"Batch upload complete: {successful}/{len(bin_files)} files")
+        
+        if failed_batches:
+            print(f"\nFailed batches ({len(failed_batches)}):")
+            for batch_num, batch_files in failed_batches:
+                print(f"  Batch {batch_num}: {batch_files[0].name} to {batch_files[-1].name}")
+            print(f"\nTo retry: python process_pretrain_data.py --upload-only \\")
+            print(f"    --output-dir {output_dir} --hf-repo {repo_id}")
+            print(f"{'='*70}\n")
+            return False
+        else:
+            print("All shards uploaded successfully!\n")
+    
+    # Upload manifest
+    manifest_file = output_dir / "manifest.json"
+    if manifest_file.exists() and "manifest.json" not in uploaded:
+        print("Uploading manifest.json...")
+        try:
+            api.upload_file(
+                path_or_fileobj=str(manifest_file),
+                path_in_repo="manifest.json",
+                repo_id=repo_id,
+                repo_type="dataset",
+            )
+            print("✓ manifest.json uploaded\n")
+        except Exception as e:
+            print(f"Warning: Could not upload manifest: {e}\n")
+    
+    # Create README
+    readme_file = output_dir / "README.md"
+    if readme_file.exists() and "README.md" not in uploaded:
+        print("Uploading README.md...")
+        try:
+            api.upload_file(
+                path_or_fileobj=str(readme_file),
+                path_in_repo="README.md",
+                repo_id=repo_id,
+                repo_type="dataset",
+            )
+            print("✓ README.md uploaded\n")
+        except Exception as e:
+            print(f"Warning: Could not upload README: {e}\n")
+    
+    print(f"{'='*70}")
+    print(f"Upload complete!")
+    print(f"https://huggingface.co/datasets/{repo_id}")
+    print(f"{'='*70}\n")
+    
+    return True
+
+
+# =============================================================================
 # Main Processing
 # =============================================================================
 
@@ -512,120 +683,6 @@ def process_mixed_data(
     return manifest
 
 
-def upload_to_hub(output_dir: Path, repo_id: str, private: bool = False):
-    """Upload processed data to HuggingFace Hub."""
-    if not HF_UPLOAD_AVAILABLE:
-        print("Error: huggingface_hub not installed")
-        return False
-    
-    print(f"\n{'='*70}")
-    print(f"UPLOADING TO HUGGINGFACE HUB")
-    print(f"Repo: {repo_id}")
-    print(f"{'='*70}\n")
-    
-    api = HfApi()
-    
-    # Create repo
-    try:
-        create_repo(repo_id, repo_type="dataset", private=private, exist_ok=True)
-    except Exception as e:
-        print(f"Error creating repo: {e}")
-        return False
-    
-    output_dir = Path(output_dir)
-    
-    # Upload all bin files
-    bin_files = sorted(output_dir.glob("*.bin"))
-    print(f"Uploading {len(bin_files)} shard files...")
-    
-    for bin_file in tqdm(bin_files, desc="Uploading"):
-        api.upload_file(
-            path_or_fileobj=str(bin_file),
-            path_in_repo=bin_file.name,
-            repo_id=repo_id,
-            repo_type="dataset",
-        )
-    
-    # Upload manifest
-    manifest_file = output_dir / "manifest.json"
-    if manifest_file.exists():
-        api.upload_file(
-            path_or_fileobj=str(manifest_file),
-            path_in_repo="manifest.json",
-            repo_id=repo_id,
-            repo_type="dataset",
-        )
-    
-    # Create README
-    with open(manifest_file) as f:
-        manifest = json.load(f)
-    
-    readme = f"""# Pre-training Data (GPT-2 Tokenized, Mixed)
-
-Mixed pre-training corpus with chunk-level shuffling for LLM training.
-
-## Data Mix
-
-| Source | Ratio | Tokens | Description |
-|--------|-------|--------|-------------|
-| FineWeb-EDU | 70% | {manifest['tokens_per_source'].get('fineweb_edu', 0)/1e9:.1f}B | Educational web content |
-| The Stack v2 | 20% | {manifest['tokens_per_source'].get('stack_v2', 0)/1e9:.1f}B | Code (Python, JS, etc.) |
-| arXiv | 10% | {manifest['tokens_per_source'].get('arxiv', 0)/1e9:.1f}B | Scientific papers |
-
-**Total: {manifest['total_tokens']/1e9:.1f}B tokens**
-
-## Format
-
-- Binary shards (~{manifest['shard_size']/1e6:.0f}M tokens each)
-- GPT-2 tokenizer (vocab size 50,257)
-- Chunk-shuffled ({manifest['chunk_size']} tokens per chunk)
-- llm.c / nanoGPT compatible format
-
-## Usage
-
-```python
-from huggingface_hub import hf_hub_download
-
-# Download specific shard
-hf_hub_download(repo_id="{repo_id}", filename="train_00000.bin", 
-                repo_type="dataset", local_dir="./data")
-
-# Or use the download script
-python download_pretrain_data.py --repo {repo_id}
-```
-
-## Training
-
-```bash
-python train_gpt_fp8.py --train-data 'data/train_*.bin' --val-data 'data/val_*.bin'
-```
-
-## Details
-
-- Seed: {manifest['seed']}
-- Train shards: {manifest['num_train_shards']}
-- Val shards: {manifest['num_val_shards']}
-"""
-    
-    readme_file = output_dir / "README.md"
-    with open(readme_file, 'w') as f:
-        f.write(readme)
-    
-    api.upload_file(
-        path_or_fileobj=str(readme_file),
-        path_in_repo="README.md",
-        repo_id=repo_id,
-        repo_type="dataset",
-    )
-    
-    print(f"\n{'='*70}")
-    print(f"Upload complete!")
-    print(f"https://huggingface.co/datasets/{repo_id}")
-    print(f"{'='*70}")
-    
-    return True
-
-
 # =============================================================================
 # CLI
 # =============================================================================
@@ -654,9 +711,13 @@ Examples:
   # Process 1B tokens for testing
   python process_pretrain_data.py --output-dir ./data --tokens 1B
   
-  # Process and upload to HuggingFace
+  # Process and upload to HuggingFace (batched, resumable)
   python process_pretrain_data.py --output-dir ./data --tokens 50B \\
       --upload --hf-repo username/pretrain-50B-gpt2
+  
+  # Resume interrupted upload
+  python process_pretrain_data.py --upload-only \\
+      --output-dir ./data --hf-repo username/pretrain-50B-gpt2
 """
     )
     
@@ -672,12 +733,14 @@ Examples:
     # Upload options
     parser.add_argument('--upload', action='store_true',
                         help='Upload to HuggingFace Hub after processing')
+    parser.add_argument('--upload-only', action='store_true',
+                        help='Skip processing, just upload existing data (for resume)')
     parser.add_argument('--hf-repo', type=str, default='s-maddrellmander/idlemachines-50B',
                         help='HuggingFace repo ID (e.g., username/pretrain-50B)')
     parser.add_argument('--private', action='store_true',
                         help='Make HF repo private')
-    parser.add_argument('--upload-only', action='store_true',
-                        help='Skip processing, just upload existing data')
+    parser.add_argument('--batch-size', type=int, default=5,
+                        help='Files per batch/commit (default: 5)')
     
     args = parser.parse_args()
     
@@ -687,7 +750,7 @@ Examples:
         if not args.hf_repo:
             print("Error: --hf-repo required for upload")
             return
-        upload_to_hub(output_dir, args.hf_repo, args.private)
+        upload_to_hub(output_dir, args.hf_repo, args.private, args.batch_size)
         return
     
     if not HF_AVAILABLE:
@@ -716,7 +779,7 @@ Examples:
         if not args.hf_repo:
             print("\nWarning: --hf-repo not specified, skipping upload")
         else:
-            upload_to_hub(output_dir, args.hf_repo, args.private)
+            upload_to_hub(output_dir, args.hf_repo, args.private, args.batch_size)
 
 
 if __name__ == "__main__":
