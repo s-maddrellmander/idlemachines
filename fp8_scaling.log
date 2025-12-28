@@ -1,0 +1,705 @@
+nohup: ignoring input
+======================================================================
+FP8 SCALING LAW RUNS - H100
+======================================================================
+Started: Mon Dec 22 17:46:12 UTC 2025
+
+Run 1: 125M @ 2.86B tokens (~2h)
+Run 2: 250M @ 5.31B tokens (~5h)
+Run 3: 350M @ 8.35B tokens (~13h)
+Total: ~17-22 hours
+======================================================================
+
+[Mon Dec 22 17:46:12 UTC 2025] Starting 125M FP8 run...
+  Tokens: 2.86B | Steps: 1456 | Batch: 96x20
+
+======================================================================
+FP8 TRAINING - FULL FEATURED
+======================================================================
+
+------------------Configuration-------------------
+Device: NVIDIA H100 80GB HBM3
+Mode: fp8_tensorwise
+Steps: 1456 (optimizer steps)
+Micro batch size: 96
+Gradient accumulation: 20
+Effective batch size: 1920 sequences
+Sequence length: 1024
+Tokens per step: 1,966,080
+Learning rate: 0.0003 (warmup: 29 steps, min: 3e-05)
+Validation every: 200 steps
+Model preset: 125M
+
+----------------------Model-----------------------
+Parameters: 0.14B (143.2M)
+Layers: 12
+Heads: 12 (KV: 4)
+Embed dim: 768
+
+------------------FP8 Conversion------------------
+Converted 61/85 Linear layers to Float8Linear
+
+-------------------Compilation--------------------
+Compiling model with torch.compile()...
+
+-----------------------Data-----------------------
+Data: 100 shards, ~10.00B tokens total
+Data: 1 shards, ~0.10B tokens total
+Train data: data/pretrain/train_*.bin
+Val data: data/pretrain/val_*.bin
+Tokens per optimizer step: 1,966,080
+Total tokens: 2862.6M (2.86B)
+
+---------------------Logging----------------------
+Log file: experiments/scaling_125M_fp8.csv
+Checkpoint: checkpoints/scaling_125M_fp8.pt
+Checkpoint strategy: Save best validation loss (overwrites)
+
+======================================================================
+Starting training...
+======================================================================
+
+step      1/1456 | loss: 10.7954 | ppl: 48797.7 | lr: 1.03e-05 | grad: 0.68 | tok/s: 109243 | tokens: 2.0M | train_time: 18.0s | wall_time: 18.0s
+step     20/1456 | loss: 9.0055 | ppl: 8147.9 | lr: 2.07e-04 | grad: 2.80 | tok/s: 452751 | tokens: 39.3M | train_time: 1.7m | wall_time: 1.7m
+step     40/1456 | loss: 7.2353 | ppl: 1387.5 | lr: 3.00e-04 | grad: 1.20 | tok/s: 450718 | tokens: 78.6M | train_time: 3.1m | wall_time: 3.1m
+step     60/1456 | loss: 7.0880 | ppl: 1197.5 | lr: 3.00e-04 | grad: 0.93 | tok/s: 451764 | tokens: 118.0M | train_time: 4.6m | wall_time: 4.6m
+step     80/1456 | loss: 6.8331 | ppl: 928.1 | lr: 2.99e-04 | grad: 0.75 | tok/s: 451959 | tokens: 157.3M | train_time: 6.0m | wall_time: 6.0m
+step    100/1456 | loss: 6.6035 | ppl: 737.7 | lr: 2.98e-04 | grad: 0.67 | tok/s: 450648 | tokens: 196.6M | train_time: 7.5m | wall_time: 7.5m
+step    120/1456 | loss: 6.4157 | ppl: 611.4 | lr: 2.97e-04 | grad: 1.60 | tok/s: 450200 | tokens: 235.9M | train_time: 8.9m | wall_time: 9.0m
+step    140/1456 | loss: 6.2075 | ppl: 496.5 | lr: 2.96e-04 | grad: 1.15 | tok/s: 449420 | tokens: 275.3M | train_time: 10.4m | wall_time: 10.4m
+step    160/1456 | loss: 6.2529 | ppl: 519.5 | lr: 2.94e-04 | grad: 2.22 | tok/s: 448186 | tokens: 314.6M | train_time: 11.9m | wall_time: 11.9m
+step    180/1456 | loss: 6.0303 | ppl: 415.9 | lr: 2.93e-04 | grad: 0.66 | tok/s: 449323 | tokens: 353.9M | train_time: 13.3m | wall_time: 13.3m
+  → Checkpoint saved (val_loss: 5.9614)
+step    200/1456 | loss: 5.9754 | val: 5.9614 | ppl: 393.6 | lr: 2.91e-04 | grad: 0.99 | tok/s: 450369 | tokens: 393.2M | train_time: 14.8m | wall_time: 14.8m
+step    220/1456 | loss: 5.8360 | ppl: 342.4 | lr: 2.88e-04 | grad: 0.48 | tok/s: 448025 | tokens: 432.5M | train_time: 16.3m | wall_time: 16.6m
+step    240/1456 | loss: 5.8909 | ppl: 361.7 | lr: 2.86e-04 | grad: 2.01 | tok/s: 447074 | tokens: 471.9M | train_time: 17.7m | wall_time: 18.1m
+step    260/1456 | loss: 5.7567 | ppl: 316.3 | lr: 2.83e-04 | grad: 0.83 | tok/s: 448517 | tokens: 511.2M | train_time: 19.2m | wall_time: 19.5m
+step    280/1456 | loss: 5.6237 | ppl: 276.9 | lr: 2.80e-04 | grad: 0.77 | tok/s: 448189 | tokens: 550.5M | train_time: 20.6m | wall_time: 21.0m
+step    300/1456 | loss: 5.5789 | ppl: 264.8 | lr: 2.77e-04 | grad: 0.87 | tok/s: 448130 | tokens: 589.8M | train_time: 22.1m | wall_time: 22.5m
+step    320/1456 | loss: 5.5571 | ppl: 259.1 | lr: 2.73e-04 | grad: 0.78 | tok/s: 447137 | tokens: 629.1M | train_time: 23.6m | wall_time: 23.9m
+step    340/1456 | loss: 5.3567 | ppl: 212.0 | lr: 2.70e-04 | grad: 0.75 | tok/s: 447392 | tokens: 668.5M | train_time: 25.0m | wall_time: 25.4m
+step    360/1456 | loss: 5.4268 | ppl: 227.4 | lr: 2.66e-04 | grad: 1.02 | tok/s: 448680 | tokens: 707.8M | train_time: 26.5m | wall_time: 26.9m
+step    380/1456 | loss: 5.2687 | ppl: 194.2 | lr: 2.62e-04 | grad: 0.70 | tok/s: 449220 | tokens: 747.1M | train_time: 28.0m | wall_time: 28.3m
+  → Checkpoint saved (val_loss: 5.2465)
+step    400/1456 | loss: 5.2414 | val: 5.2465 | ppl: 188.9 | lr: 2.57e-04 | grad: 0.56 | tok/s: 447930 | tokens: 786.4M | train_time: 29.4m | wall_time: 29.8m
+step    420/1456 | loss: 5.1165 | ppl: 166.7 | lr: 2.53e-04 | grad: 0.67 | tok/s: 446413 | tokens: 825.8M | train_time: 30.9m | wall_time: 31.3m
+step    440/1456 | loss: 5.1211 | ppl: 167.5 | lr: 2.48e-04 | grad: 0.72 | tok/s: 448314 | tokens: 865.1M | train_time: 32.4m | wall_time: 32.8m
+step    460/1456 | loss: 5.1429 | ppl: 171.2 | lr: 2.44e-04 | grad: 0.74 | tok/s: 449455 | tokens: 904.4M | train_time: 33.8m | wall_time: 34.3m
+step    480/1456 | loss: 5.0268 | ppl: 152.4 | lr: 2.39e-04 | grad: 0.79 | tok/s: 448967 | tokens: 943.7M | train_time: 35.3m | wall_time: 35.7m
+step    500/1456 | loss: 5.0691 | ppl: 159.0 | lr: 2.34e-04 | grad: 1.30 | tok/s: 448144 | tokens: 983.0M | train_time: 36.7m | wall_time: 37.2m
+step    520/1456 | loss: 4.9271 | ppl: 138.0 | lr: 2.29e-04 | grad: 0.81 | tok/s: 448669 | tokens: 1022.4M | train_time: 38.2m | wall_time: 38.7m
+step    540/1456 | loss: 4.9464 | ppl: 140.7 | lr: 2.23e-04 | grad: 0.81 | tok/s: 448053 | tokens: 1061.7M | train_time: 39.7m | wall_time: 40.1m
+step    560/1456 | loss: 4.8343 | ppl: 125.8 | lr: 2.18e-04 | grad: 0.85 | tok/s: 425020 | tokens: 1101.0M | train_time: 41.1m | wall_time: 41.6m
+step    580/1456 | loss: 4.7719 | ppl: 118.1 | lr: 2.12e-04 | grad: 0.52 | tok/s: 448666 | tokens: 1140.3M | train_time: 42.6m | wall_time: 43.0m
+  → Checkpoint saved (val_loss: 4.8111)
+step    600/1456 | loss: 4.7937 | val: 4.8111 | ppl: 120.8 | lr: 2.07e-04 | grad: 1.13 | tok/s: 447747 | tokens: 1179.6M | train_time: 44.1m | wall_time: 44.5m
+step    620/1456 | loss: 4.7768 | ppl: 118.7 | lr: 2.01e-04 | grad: 1.19 | tok/s: 447663 | tokens: 1219.0M | train_time: 45.5m | wall_time: 46.1m
+step    640/1456 | loss: 4.7405 | ppl: 114.5 | lr: 1.95e-04 | grad: 0.49 | tok/s: 449200 | tokens: 1258.3M | train_time: 47.0m | wall_time: 47.5m
+step    660/1456 | loss: 4.6450 | ppl: 104.1 | lr: 1.89e-04 | grad: 0.84 | tok/s: 448126 | tokens: 1297.6M | train_time: 48.5m | wall_time: 49.0m
+step    680/1456 | loss: 4.6486 | ppl: 104.4 | lr: 1.84e-04 | grad: 1.02 | tok/s: 446910 | tokens: 1336.9M | train_time: 49.9m | wall_time: 50.4m
+step    700/1456 | loss: 4.5850 | ppl: 98.0 | lr: 1.78e-04 | grad: 0.68 | tok/s: 448131 | tokens: 1376.3M | train_time: 51.4m | wall_time: 51.9m
+step    720/1456 | loss: 4.6287 | ppl: 102.4 | lr: 1.72e-04 | grad: 0.95 | tok/s: 447516 | tokens: 1415.6M | train_time: 52.9m | wall_time: 53.4m
+step    740/1456 | loss: 4.4760 | ppl: 87.9 | lr: 1.66e-04 | grad: 0.62 | tok/s: 447389 | tokens: 1454.9M | train_time: 54.3m | wall_time: 54.8m
+step    760/1456 | loss: 4.4389 | ppl: 84.7 | lr: 1.60e-04 | grad: 0.64 | tok/s: 447202 | tokens: 1494.2M | train_time: 55.8m | wall_time: 56.3m
+step    780/1456 | loss: 4.4768 | ppl: 88.0 | lr: 1.54e-04 | grad: 0.62 | tok/s: 448077 | tokens: 1533.5M | train_time: 57.2m | wall_time: 57.8m
+  → Checkpoint saved (val_loss: 4.5490)
+step    800/1456 | loss: 4.5131 | val: 4.5490 | ppl: 91.2 | lr: 1.48e-04 | grad: 0.99 | tok/s: 447268 | tokens: 1572.9M | train_time: 58.7m | wall_time: 59.2m
+step    820/1456 | loss: 4.4668 | ppl: 87.1 | lr: 1.42e-04 | grad: 0.49 | tok/s: 447234 | tokens: 1612.2M | train_time: 1.00h | wall_time: 1.01h
+step    840/1456 | loss: 4.4053 | ppl: 81.9 | lr: 1.36e-04 | grad: 0.64 | tok/s: 447777 | tokens: 1651.5M | train_time: 1.03h | wall_time: 1.04h
+step    860/1456 | loss: 4.4066 | ppl: 82.0 | lr: 1.30e-04 | grad: 0.59 | tok/s: 449157 | tokens: 1690.8M | train_time: 1.05h | wall_time: 1.06h
+step    880/1456 | loss: 4.4273 | ppl: 83.7 | lr: 1.25e-04 | grad: 0.47 | tok/s: 447528 | tokens: 1730.2M | train_time: 1.08h | wall_time: 1.09h
+step    900/1456 | loss: 4.3847 | ppl: 80.2 | lr: 1.19e-04 | grad: 0.81 | tok/s: 448880 | tokens: 1769.5M | train_time: 1.10h | wall_time: 1.11h
+step    920/1456 | loss: 4.3883 | ppl: 80.5 | lr: 1.14e-04 | grad: 1.00 | tok/s: 448514 | tokens: 1808.8M | train_time: 1.13h | wall_time: 1.14h
+step    940/1456 | loss: 4.3844 | ppl: 80.2 | lr: 1.08e-04 | grad: 0.59 | tok/s: 448048 | tokens: 1848.1M | train_time: 1.15h | wall_time: 1.16h
+step    960/1456 | loss: 4.3218 | ppl: 75.3 | lr: 1.03e-04 | grad: 1.07 | tok/s: 449072 | tokens: 1887.4M | train_time: 1.17h | wall_time: 1.18h
+step    980/1456 | loss: 4.2846 | ppl: 72.6 | lr: 9.76e-05 | grad: 0.76 | tok/s: 447431 | tokens: 1926.8M | train_time: 1.20h | wall_time: 1.21h
+  → Checkpoint saved (val_loss: 4.3730)
+step   1000/1456 | loss: 4.2466 | val: 4.3730 | ppl: 69.9 | lr: 9.25e-05 | grad: 0.54 | tok/s: 448335 | tokens: 1966.1M | train_time: 1.22h | wall_time: 1.23h
+step   1020/1456 | loss: 4.2691 | ppl: 71.5 | lr: 8.76e-05 | grad: 0.60 | tok/s: 447329 | tokens: 2005.4M | train_time: 1.25h | wall_time: 1.26h
+step   1040/1456 | loss: 4.2722 | ppl: 71.7 | lr: 8.28e-05 | grad: 0.83 | tok/s: 448155 | tokens: 2044.7M | train_time: 1.27h | wall_time: 1.28h
+step   1060/1456 | loss: 4.1743 | ppl: 65.0 | lr: 7.81e-05 | grad: 0.53 | tok/s: 447633 | tokens: 2084.0M | train_time: 1.30h | wall_time: 1.31h
+step   1080/1456 | loss: 4.2966 | ppl: 73.4 | lr: 7.37e-05 | grad: 0.56 | tok/s: 449160 | tokens: 2123.4M | train_time: 1.32h | wall_time: 1.33h
+step   1100/1456 | loss: 4.1763 | ppl: 65.1 | lr: 6.94e-05 | grad: 1.00 | tok/s: 446935 | tokens: 2162.7M | train_time: 1.34h | wall_time: 1.36h
+step   1120/1456 | loss: 4.2297 | ppl: 68.7 | lr: 6.53e-05 | grad: 0.56 | tok/s: 447780 | tokens: 2202.0M | train_time: 1.37h | wall_time: 1.38h
+step   1140/1456 | loss: 4.2137 | ppl: 67.6 | lr: 6.14e-05 | grad: 0.55 | tok/s: 447093 | tokens: 2241.3M | train_time: 1.39h | wall_time: 1.40h
+step   1160/1456 | loss: 4.2136 | ppl: 67.6 | lr: 5.77e-05 | grad: 0.52 | tok/s: 447454 | tokens: 2280.7M | train_time: 1.42h | wall_time: 1.43h
+step   1180/1456 | loss: 4.0539 | ppl: 57.6 | lr: 5.42e-05 | grad: 0.48 | tok/s: 448489 | tokens: 2320.0M | train_time: 1.44h | wall_time: 1.45h
+  → Checkpoint saved (val_loss: 4.2763)
+step   1200/1456 | loss: 4.1111 | val: 4.2763 | ppl: 61.0 | lr: 5.09e-05 | grad: 0.48 | tok/s: 446793 | tokens: 2359.3M | train_time: 1.47h | wall_time: 1.48h
+step   1220/1456 | loss: 4.1538 | ppl: 63.7 | lr: 4.78e-05 | grad: 0.52 | tok/s: 447681 | tokens: 2398.6M | train_time: 1.49h | wall_time: 1.50h
+step   1240/1456 | loss: 4.0757 | ppl: 58.9 | lr: 4.50e-05 | grad: 0.47 | tok/s: 448606 | tokens: 2437.9M | train_time: 1.52h | wall_time: 1.53h
+step   1260/1456 | loss: 4.0982 | ppl: 60.2 | lr: 4.24e-05 | grad: 0.44 | tok/s: 447649 | tokens: 2477.3M | train_time: 1.54h | wall_time: 1.55h
+step   1280/1456 | loss: 4.1009 | ppl: 60.4 | lr: 4.00e-05 | grad: 0.45 | tok/s: 448414 | tokens: 2516.6M | train_time: 1.56h | wall_time: 1.58h
+step   1300/1456 | loss: 4.0785 | ppl: 59.1 | lr: 3.79e-05 | grad: 0.44 | tok/s: 447831 | tokens: 2555.9M | train_time: 1.59h | wall_time: 1.60h
+step   1320/1456 | loss: 4.0408 | ppl: 56.9 | lr: 3.60e-05 | grad: 0.48 | tok/s: 448051 | tokens: 2595.2M | train_time: 1.61h | wall_time: 1.63h
+step   1340/1456 | loss: 4.0781 | ppl: 59.0 | lr: 3.44e-05 | grad: 0.46 | tok/s: 447404 | tokens: 2634.5M | train_time: 1.64h | wall_time: 1.65h
+step   1360/1456 | loss: 4.0856 | ppl: 59.5 | lr: 3.30e-05 | grad: 0.42 | tok/s: 447130 | tokens: 2673.9M | train_time: 1.66h | wall_time: 1.67h
+step   1380/1456 | loss: 4.0596 | ppl: 58.0 | lr: 3.19e-05 | grad: 0.41 | tok/s: 447712 | tokens: 2713.2M | train_time: 1.69h | wall_time: 1.70h
+  → Checkpoint saved (val_loss: 4.2376)
+step   1400/1456 | loss: 4.0301 | val: 4.2376 | ppl: 56.3 | lr: 3.10e-05 | grad: 0.40 | tok/s: 449387 | tokens: 2752.5M | train_time: 1.71h | wall_time: 1.72h
+step   1420/1456 | loss: 4.0170 | ppl: 55.5 | lr: 3.04e-05 | grad: 0.44 | tok/s: 448724 | tokens: 2791.8M | train_time: 1.74h | wall_time: 1.75h
+step   1440/1456 | loss: 4.0752 | ppl: 58.9 | lr: 3.01e-05 | grad: 0.40 | tok/s: 447813 | tokens: 2831.2M | train_time: 1.76h | wall_time: 1.77h
+
+-----------------Final Validation-----------------
+Final validation loss: 4.2279
+Final validation perplexity: 68.58
+
+======================================================================
+TRAINING COMPLETE
+======================================================================
+Total steps: 1456
+Total tokens: 2862.6M
+Training time: 1.78h
+Wall time: 1.80h
+Average throughput: 446911 tokens/sec
+Final train loss: 4.0520
+Final val loss: 4.2279
+Best val loss: 4.2376
+Mode: fp8_tensorwise
+Log saved to: experiments/scaling_125M_fp8.csv
+Best checkpoint saved to: checkpoints/scaling_125M_fp8.pt
+======================================================================
+
+[Mon Dec 22 19:34:03 UTC 2025] 125M FP8 complete!
+======================================================================
+
+[Mon Dec 22 19:34:03 UTC 2025] Starting 250M FP8 run...
+  Tokens: 5.31B | Steps: 2700 | Batch: 80x24
+
+======================================================================
+FP8 TRAINING - FULL FEATURED
+======================================================================
+
+------------------Configuration-------------------
+Device: NVIDIA H100 80GB HBM3
+Mode: fp8_tensorwise
+Steps: 2700 (optimizer steps)
+Micro batch size: 80
+Gradient accumulation: 24
+Effective batch size: 1920 sequences
+Sequence length: 1024
+Tokens per step: 1,966,080
+Learning rate: 0.0003 (warmup: 54 steps, min: 3e-05)
+Validation every: 200 steps
+Model preset: 250M
+
+----------------------Model-----------------------
+Parameters: 0.27B (265.5M)
+Layers: 14
+Heads: 16 (KV: 4)
+Embed dim: 1024
+
+------------------FP8 Conversion------------------
+Converted 71/99 Linear layers to Float8Linear
+
+-------------------Compilation--------------------
+Compiling model with torch.compile()...
+
+-----------------------Data-----------------------
+Data: 100 shards, ~10.00B tokens total
+Data: 1 shards, ~0.10B tokens total
+Train data: data/pretrain/train_*.bin
+Val data: data/pretrain/val_*.bin
+Tokens per optimizer step: 1,966,080
+Total tokens: 5308.4M (5.31B)
+
+---------------------Logging----------------------
+Log file: experiments/scaling_250M_fp8.csv
+Checkpoint: checkpoints/scaling_250M_fp8.pt
+Checkpoint strategy: Save best validation loss (overwrites)
+
+======================================================================
+Starting training...
+======================================================================
+
+step      1/2700 | loss: 10.7914 | ppl: 48601.8 | lr: 5.56e-06 | grad: 0.74 | tok/s: 88710 | tokens: 2.0M | train_time: 22.2s | wall_time: 22.2s
+step     20/2700 | loss: 9.2675 | ppl: 10588.5 | lr: 1.11e-04 | grad: 3.25 | tok/s: 294064 | tokens: 39.3M | train_time: 2.5m | wall_time: 2.5m
+step     40/2700 | loss: 7.3669 | ppl: 1582.7 | lr: 2.22e-04 | grad: 1.84 | tok/s: 293493 | tokens: 78.6M | train_time: 4.7m | wall_time: 4.7m
+step     60/2700 | loss: 7.1571 | ppl: 1283.2 | lr: 3.00e-04 | grad: 0.60 | tok/s: 293200 | tokens: 118.0M | train_time: 7.0m | wall_time: 7.0m
+step     80/2700 | loss: 6.8972 | ppl: 989.5 | lr: 3.00e-04 | grad: 0.77 | tok/s: 292897 | tokens: 157.3M | train_time: 9.2m | wall_time: 9.2m
+step    100/2700 | loss: 6.6339 | ppl: 760.5 | lr: 3.00e-04 | grad: 0.51 | tok/s: 292155 | tokens: 196.6M | train_time: 11.4m | wall_time: 11.4m
+step    120/2700 | loss: 6.4332 | ppl: 622.2 | lr: 3.00e-04 | grad: 1.69 | tok/s: 292149 | tokens: 235.9M | train_time: 13.7m | wall_time: 13.7m
+step    140/2700 | loss: 6.2304 | ppl: 508.0 | lr: 2.99e-04 | grad: 0.54 | tok/s: 292030 | tokens: 275.3M | train_time: 15.9m | wall_time: 15.9m
+step    160/2700 | loss: 6.2453 | ppl: 515.6 | lr: 2.99e-04 | grad: 0.83 | tok/s: 291684 | tokens: 314.6M | train_time: 18.2m | wall_time: 18.2m
+step    180/2700 | loss: 6.0182 | ppl: 410.9 | lr: 2.98e-04 | grad: 0.82 | tok/s: 292200 | tokens: 353.9M | train_time: 20.4m | wall_time: 20.4m
+  → Checkpoint saved (val_loss: 5.8913)
+step    200/2700 | loss: 5.9494 | val: 5.8913 | ppl: 383.5 | lr: 2.98e-04 | grad: 1.78 | tok/s: 291925 | tokens: 393.2M | train_time: 22.7m | wall_time: 22.7m
+step    220/2700 | loss: 5.7428 | ppl: 311.9 | lr: 2.97e-04 | grad: 0.54 | tok/s: 291085 | tokens: 432.5M | train_time: 24.9m | wall_time: 25.1m
+step    240/2700 | loss: 5.6938 | ppl: 297.0 | lr: 2.97e-04 | grad: 0.43 | tok/s: 291087 | tokens: 471.9M | train_time: 27.2m | wall_time: 27.4m
+step    260/2700 | loss: 5.6232 | ppl: 276.8 | lr: 2.96e-04 | grad: 0.58 | tok/s: 291663 | tokens: 511.2M | train_time: 29.4m | wall_time: 29.6m
+step    280/2700 | loss: 5.4805 | ppl: 240.0 | lr: 2.95e-04 | grad: 0.79 | tok/s: 291689 | tokens: 550.5M | train_time: 31.7m | wall_time: 31.9m
+step    300/2700 | loss: 5.4475 | ppl: 232.2 | lr: 2.94e-04 | grad: 0.58 | tok/s: 291787 | tokens: 589.8M | train_time: 33.9m | wall_time: 34.1m
+step    320/2700 | loss: 5.3870 | ppl: 218.6 | lr: 2.93e-04 | grad: 0.36 | tok/s: 291542 | tokens: 629.1M | train_time: 36.2m | wall_time: 36.4m
+step    340/2700 | loss: 5.2212 | ppl: 185.2 | lr: 2.92e-04 | grad: 0.43 | tok/s: 291045 | tokens: 668.5M | train_time: 38.4m | wall_time: 38.6m
+step    360/2700 | loss: 5.2712 | ppl: 194.7 | lr: 2.91e-04 | grad: 0.41 | tok/s: 291356 | tokens: 707.8M | train_time: 40.7m | wall_time: 40.9m
+step    380/2700 | loss: 5.1413 | ppl: 170.9 | lr: 2.90e-04 | grad: 0.81 | tok/s: 291324 | tokens: 747.1M | train_time: 42.9m | wall_time: 43.1m
+  → Checkpoint saved (val_loss: 5.0824)
+step    400/2700 | loss: 5.0838 | val: 5.0824 | ppl: 161.4 | lr: 2.89e-04 | grad: 0.82 | tok/s: 291124 | tokens: 786.4M | train_time: 45.2m | wall_time: 45.4m
+step    420/2700 | loss: 4.9585 | ppl: 142.4 | lr: 2.87e-04 | grad: 0.81 | tok/s: 291095 | tokens: 825.8M | train_time: 47.4m | wall_time: 47.7m
+step    440/2700 | loss: 4.9226 | ppl: 137.4 | lr: 2.86e-04 | grad: 0.41 | tok/s: 291037 | tokens: 865.1M | train_time: 49.7m | wall_time: 50.0m
+step    460/2700 | loss: 4.9456 | ppl: 140.6 | lr: 2.85e-04 | grad: 0.58 | tok/s: 291560 | tokens: 904.4M | train_time: 51.9m | wall_time: 52.2m
+step    480/2700 | loss: 4.8243 | ppl: 124.5 | lr: 2.83e-04 | grad: 0.67 | tok/s: 290945 | tokens: 943.7M | train_time: 54.2m | wall_time: 54.5m
+step    500/2700 | loss: 4.8466 | ppl: 127.3 | lr: 2.82e-04 | grad: 0.63 | tok/s: 291296 | tokens: 983.0M | train_time: 56.4m | wall_time: 56.7m
+step    520/2700 | loss: 4.7062 | ppl: 110.6 | lr: 2.80e-04 | grad: 0.38 | tok/s: 291583 | tokens: 1022.4M | train_time: 58.7m | wall_time: 59.0m
+step    540/2700 | loss: 4.6634 | ppl: 106.0 | lr: 2.78e-04 | grad: 0.58 | tok/s: 290575 | tokens: 1061.7M | train_time: 1.02h | wall_time: 1.02h
+step    560/2700 | loss: 4.6246 | ppl: 102.0 | lr: 2.76e-04 | grad: 0.72 | tok/s: 282148 | tokens: 1101.0M | train_time: 1.05h | wall_time: 1.06h
+step    580/2700 | loss: 4.5073 | ppl: 90.7 | lr: 2.75e-04 | grad: 0.55 | tok/s: 290733 | tokens: 1140.3M | train_time: 1.09h | wall_time: 1.10h
+  → Checkpoint saved (val_loss: 4.5424)
+step    600/2700 | loss: 4.4706 | val: 4.5424 | ppl: 87.4 | lr: 2.73e-04 | grad: 0.61 | tok/s: 290831 | tokens: 1179.6M | train_time: 1.13h | wall_time: 1.13h
+step    620/2700 | loss: 4.5156 | ppl: 91.4 | lr: 2.71e-04 | grad: 0.82 | tok/s: 290437 | tokens: 1219.0M | train_time: 1.17h | wall_time: 1.17h
+step    640/2700 | loss: 4.4189 | ppl: 83.0 | lr: 2.69e-04 | grad: 0.64 | tok/s: 291236 | tokens: 1258.3M | train_time: 1.20h | wall_time: 1.21h
+step    660/2700 | loss: 4.3331 | ppl: 76.2 | lr: 2.67e-04 | grad: 0.46 | tok/s: 291643 | tokens: 1297.6M | train_time: 1.24h | wall_time: 1.25h
+step    680/2700 | loss: 4.2927 | ppl: 73.2 | lr: 2.64e-04 | grad: 0.31 | tok/s: 292011 | tokens: 1336.9M | train_time: 1.28h | wall_time: 1.29h
+step    700/2700 | loss: 4.2593 | ppl: 70.8 | lr: 2.62e-04 | grad: 0.49 | tok/s: 290975 | tokens: 1376.3M | train_time: 1.32h | wall_time: 1.32h
+step    720/2700 | loss: 4.2854 | ppl: 72.6 | lr: 2.60e-04 | grad: 0.69 | tok/s: 290999 | tokens: 1415.6M | train_time: 1.35h | wall_time: 1.36h
+step    740/2700 | loss: 4.1447 | ppl: 63.1 | lr: 2.58e-04 | grad: 0.92 | tok/s: 290995 | tokens: 1454.9M | train_time: 1.39h | wall_time: 1.40h
+step    760/2700 | loss: 4.0423 | ppl: 57.0 | lr: 2.55e-04 | grad: 0.56 | tok/s: 290736 | tokens: 1494.2M | train_time: 1.43h | wall_time: 1.44h
+step    780/2700 | loss: 4.0549 | ppl: 57.7 | lr: 2.53e-04 | grad: 0.36 | tok/s: 291190 | tokens: 1533.5M | train_time: 1.47h | wall_time: 1.47h
+  → Checkpoint saved (val_loss: 4.1361)
+step    800/2700 | loss: 4.0310 | val: 4.1361 | ppl: 56.3 | lr: 2.50e-04 | grad: 0.56 | tok/s: 292143 | tokens: 1572.9M | train_time: 1.50h | wall_time: 1.51h
+step    820/2700 | loss: 4.0319 | ppl: 56.4 | lr: 2.48e-04 | grad: 0.89 | tok/s: 291743 | tokens: 1612.2M | train_time: 1.54h | wall_time: 1.55h
+step    840/2700 | loss: 3.9161 | ppl: 50.2 | lr: 2.45e-04 | grad: 0.48 | tok/s: 291630 | tokens: 1651.5M | train_time: 1.58h | wall_time: 1.59h
+step    860/2700 | loss: 3.8695 | ppl: 47.9 | lr: 2.43e-04 | grad: 0.58 | tok/s: 291854 | tokens: 1690.8M | train_time: 1.62h | wall_time: 1.63h
+step    880/2700 | loss: 3.8542 | ppl: 47.2 | lr: 2.40e-04 | grad: 0.58 | tok/s: 290862 | tokens: 1730.2M | train_time: 1.65h | wall_time: 1.66h
+step    900/2700 | loss: 3.8017 | ppl: 44.8 | lr: 2.37e-04 | grad: 0.64 | tok/s: 291422 | tokens: 1769.5M | train_time: 1.69h | wall_time: 1.70h
+step    920/2700 | loss: 3.7512 | ppl: 42.6 | lr: 2.35e-04 | grad: 0.32 | tok/s: 292236 | tokens: 1808.8M | train_time: 1.73h | wall_time: 1.74h
+step    940/2700 | loss: 3.7705 | ppl: 43.4 | lr: 2.32e-04 | grad: 0.44 | tok/s: 290656 | tokens: 1848.1M | train_time: 1.77h | wall_time: 1.78h
+step    960/2700 | loss: 3.6843 | ppl: 39.8 | lr: 2.29e-04 | grad: 0.52 | tok/s: 291307 | tokens: 1887.4M | train_time: 1.80h | wall_time: 1.81h
+step    980/2700 | loss: 3.6221 | ppl: 37.4 | lr: 2.26e-04 | grad: 0.48 | tok/s: 291382 | tokens: 1926.8M | train_time: 1.84h | wall_time: 1.85h
+  → Checkpoint saved (val_loss: 3.7592)
+step   1000/2700 | loss: 3.5835 | val: 3.7592 | ppl: 36.0 | lr: 2.23e-04 | grad: 0.60 | tok/s: 289744 | tokens: 1966.1M | train_time: 1.88h | wall_time: 1.89h
+step   1020/2700 | loss: 3.6295 | ppl: 37.7 | lr: 2.21e-04 | grad: 0.54 | tok/s: 290737 | tokens: 2005.4M | train_time: 1.92h | wall_time: 1.93h
+step   1040/2700 | loss: 3.5842 | ppl: 36.0 | lr: 2.18e-04 | grad: 0.58 | tok/s: 292143 | tokens: 2044.7M | train_time: 1.95h | wall_time: 1.96h
+step   1060/2700 | loss: 3.4934 | ppl: 32.9 | lr: 2.15e-04 | grad: 0.37 | tok/s: 290822 | tokens: 2084.0M | train_time: 1.99h | wall_time: 2.00h
+step   1080/2700 | loss: 3.5501 | ppl: 34.8 | lr: 2.12e-04 | grad: 0.45 | tok/s: 291099 | tokens: 2123.4M | train_time: 2.03h | wall_time: 2.04h
+step   1100/2700 | loss: 3.4775 | ppl: 32.4 | lr: 2.09e-04 | grad: 0.85 | tok/s: 290875 | tokens: 2162.7M | train_time: 2.07h | wall_time: 2.08h
+step   1120/2700 | loss: 3.5046 | ppl: 33.3 | lr: 2.06e-04 | grad: 0.61 | tok/s: 291270 | tokens: 2202.0M | train_time: 2.10h | wall_time: 2.11h
+step   1140/2700 | loss: 3.4437 | ppl: 31.3 | lr: 2.02e-04 | grad: 0.29 | tok/s: 291975 | tokens: 2241.3M | train_time: 2.14h | wall_time: 2.15h
+step   1160/2700 | loss: 3.4667 | ppl: 32.0 | lr: 1.99e-04 | grad: 0.44 | tok/s: 290574 | tokens: 2280.7M | train_time: 2.18h | wall_time: 2.19h
+step   1180/2700 | loss: 3.3556 | ppl: 28.7 | lr: 1.96e-04 | grad: 0.39 | tok/s: 291173 | tokens: 2320.0M | train_time: 2.22h | wall_time: 2.23h
+  → Checkpoint saved (val_loss: 3.5415)
+step   1200/2700 | loss: 3.3834 | val: 3.5415 | ppl: 29.5 | lr: 1.93e-04 | grad: 0.33 | tok/s: 282294 | tokens: 2359.3M | train_time: 2.25h | wall_time: 2.27h
+step   1220/2700 | loss: 3.3679 | ppl: 29.0 | lr: 1.90e-04 | grad: 0.36 | tok/s: 281115 | tokens: 2398.6M | train_time: 2.29h | wall_time: 2.30h
+step   1240/2700 | loss: 3.2876 | ppl: 26.8 | lr: 1.87e-04 | grad: 0.48 | tok/s: 291615 | tokens: 2437.9M | train_time: 2.33h | wall_time: 2.34h
+step   1260/2700 | loss: 3.3079 | ppl: 27.3 | lr: 1.84e-04 | grad: 0.29 | tok/s: 292254 | tokens: 2477.3M | train_time: 2.37h | wall_time: 2.38h
+step   1280/2700 | loss: 3.3468 | ppl: 28.4 | lr: 1.81e-04 | grad: 0.41 | tok/s: 290895 | tokens: 2516.6M | train_time: 2.40h | wall_time: 2.42h
+step   1300/2700 | loss: 3.3134 | ppl: 27.5 | lr: 1.77e-04 | grad: 0.47 | tok/s: 291145 | tokens: 2555.9M | train_time: 2.44h | wall_time: 2.45h
+step   1320/2700 | loss: 3.2653 | ppl: 26.2 | lr: 1.74e-04 | grad: 0.32 | tok/s: 291903 | tokens: 2595.2M | train_time: 2.48h | wall_time: 2.49h
+step   1340/2700 | loss: 3.2464 | ppl: 25.7 | lr: 1.71e-04 | grad: 0.36 | tok/s: 291238 | tokens: 2634.5M | train_time: 2.52h | wall_time: 2.53h
+step   1360/2700 | loss: 3.2517 | ppl: 25.8 | lr: 1.68e-04 | grad: 0.48 | tok/s: 290867 | tokens: 2673.9M | train_time: 2.55h | wall_time: 2.57h
+step   1380/2700 | loss: 3.2435 | ppl: 25.6 | lr: 1.65e-04 | grad: 0.31 | tok/s: 291937 | tokens: 2713.2M | train_time: 2.59h | wall_time: 2.60h
+  → Checkpoint saved (val_loss: 3.4234)
+step   1400/2700 | loss: 3.2276 | val: 3.4234 | ppl: 25.2 | lr: 1.61e-04 | grad: 0.31 | tok/s: 291245 | tokens: 2752.5M | train_time: 2.63h | wall_time: 2.64h
+step   1420/2700 | loss: 3.1750 | ppl: 23.9 | lr: 1.58e-04 | grad: 0.31 | tok/s: 291208 | tokens: 2791.8M | train_time: 2.67h | wall_time: 2.68h
+step   1440/2700 | loss: 3.1817 | ppl: 24.1 | lr: 1.55e-04 | grad: 0.28 | tok/s: 291337 | tokens: 2831.2M | train_time: 2.70h | wall_time: 2.72h
+step   1460/2700 | loss: 3.2338 | ppl: 25.4 | lr: 1.52e-04 | grad: 0.27 | tok/s: 290882 | tokens: 2870.5M | train_time: 2.74h | wall_time: 2.76h
+step   1480/2700 | loss: 3.2144 | ppl: 24.9 | lr: 1.49e-04 | grad: 0.46 | tok/s: 290746 | tokens: 2909.8M | train_time: 2.78h | wall_time: 2.79h
+step   1500/2700 | loss: 3.1700 | ppl: 23.8 | lr: 1.45e-04 | grad: 0.39 | tok/s: 290688 | tokens: 2949.1M | train_time: 2.82h | wall_time: 2.83h
+step   1520/2700 | loss: 3.1587 | ppl: 23.5 | lr: 1.42e-04 | grad: 0.40 | tok/s: 290935 | tokens: 2988.4M | train_time: 2.85h | wall_time: 2.87h
+step   1540/2700 | loss: 3.1830 | ppl: 24.1 | lr: 1.39e-04 | grad: 0.40 | tok/s: 290862 | tokens: 3027.8M | train_time: 2.89h | wall_time: 2.91h
+step   1560/2700 | loss: 3.1668 | ppl: 23.7 | lr: 1.36e-04 | grad: 0.43 | tok/s: 291161 | tokens: 3067.1M | train_time: 2.93h | wall_time: 2.94h
+step   1580/2700 | loss: 3.1943 | ppl: 24.4 | lr: 1.33e-04 | grad: 0.40 | tok/s: 291038 | tokens: 3106.4M | train_time: 2.97h | wall_time: 2.98h
+  → Checkpoint saved (val_loss: 3.3370)
+step   1600/2700 | loss: 3.1440 | val: 3.3370 | ppl: 23.2 | lr: 1.30e-04 | grad: 0.30 | tok/s: 291477 | tokens: 3145.7M | train_time: 3.01h | wall_time: 3.02h
+step   1620/2700 | loss: 3.0885 | ppl: 21.9 | lr: 1.27e-04 | grad: 0.32 | tok/s: 290688 | tokens: 3185.0M | train_time: 3.04h | wall_time: 3.06h
+step   1640/2700 | loss: 3.1761 | ppl: 24.0 | lr: 1.24e-04 | grad: 0.40 | tok/s: 291951 | tokens: 3224.4M | train_time: 3.08h | wall_time: 3.10h
+step   1660/2700 | loss: 3.1074 | ppl: 22.4 | lr: 1.20e-04 | grad: 0.34 | tok/s: 291383 | tokens: 3263.7M | train_time: 3.12h | wall_time: 3.13h
+step   1680/2700 | loss: 3.1208 | ppl: 22.7 | lr: 1.17e-04 | grad: 0.27 | tok/s: 291390 | tokens: 3303.0M | train_time: 3.16h | wall_time: 3.17h
+step   1700/2700 | loss: 3.0922 | ppl: 22.0 | lr: 1.14e-04 | grad: 0.32 | tok/s: 290816 | tokens: 3342.3M | train_time: 3.19h | wall_time: 3.21h
+step   1720/2700 | loss: 3.1622 | ppl: 23.6 | lr: 1.12e-04 | grad: 0.39 | tok/s: 291646 | tokens: 3381.7M | train_time: 3.23h | wall_time: 3.25h
+step   1740/2700 | loss: 3.1684 | ppl: 23.8 | lr: 1.09e-04 | grad: 0.30 | tok/s: 291235 | tokens: 3421.0M | train_time: 3.27h | wall_time: 3.28h
+step   1760/2700 | loss: 3.1071 | ppl: 22.4 | lr: 1.06e-04 | grad: 0.32 | tok/s: 291342 | tokens: 3460.3M | train_time: 3.31h | wall_time: 3.32h
+step   1780/2700 | loss: 3.0693 | ppl: 21.5 | lr: 1.03e-04 | grad: 0.29 | tok/s: 280031 | tokens: 3499.6M | train_time: 3.34h | wall_time: 3.36h
+  → Checkpoint saved (val_loss: 3.2861)
+step   1800/2700 | loss: 3.0633 | val: 3.2861 | ppl: 21.4 | lr: 1.00e-04 | grad: 0.32 | tok/s: 290732 | tokens: 3538.9M | train_time: 3.38h | wall_time: 3.40h
+step   1820/2700 | loss: 3.0578 | ppl: 21.3 | lr: 9.72e-05 | grad: 0.31 | tok/s: 290961 | tokens: 3578.3M | train_time: 3.42h | wall_time: 3.44h
+step   1840/2700 | loss: 3.1043 | ppl: 22.3 | lr: 9.45e-05 | grad: 0.35 | tok/s: 291892 | tokens: 3617.6M | train_time: 3.46h | wall_time: 3.47h
+step   1860/2700 | loss: 3.0811 | ppl: 21.8 | lr: 9.18e-05 | grad: 0.26 | tok/s: 291273 | tokens: 3656.9M | train_time: 3.49h | wall_time: 3.51h
+step   1880/2700 | loss: 3.0490 | ppl: 21.1 | lr: 8.91e-05 | grad: 0.30 | tok/s: 291754 | tokens: 3696.2M | train_time: 3.53h | wall_time: 3.55h
+step   1900/2700 | loss: 3.1249 | ppl: 22.8 | lr: 8.65e-05 | grad: 0.28 | tok/s: 291477 | tokens: 3735.6M | train_time: 3.57h | wall_time: 3.59h
+step   1920/2700 | loss: 3.0315 | ppl: 20.7 | lr: 8.39e-05 | grad: 0.26 | tok/s: 291747 | tokens: 3774.9M | train_time: 3.61h | wall_time: 3.62h
+step   1940/2700 | loss: 3.0702 | ppl: 21.5 | lr: 8.13e-05 | grad: 0.30 | tok/s: 291657 | tokens: 3814.2M | train_time: 3.64h | wall_time: 3.66h
+step   1960/2700 | loss: 3.1001 | ppl: 22.2 | lr: 7.88e-05 | grad: 0.28 | tok/s: 290726 | tokens: 3853.5M | train_time: 3.68h | wall_time: 3.70h
+step   1980/2700 | loss: 3.0163 | ppl: 20.4 | lr: 7.64e-05 | grad: 0.25 | tok/s: 291604 | tokens: 3892.8M | train_time: 3.72h | wall_time: 3.74h
+  → Checkpoint saved (val_loss: 3.2504)
+step   2000/2700 | loss: 3.0923 | val: 3.2504 | ppl: 22.0 | lr: 7.40e-05 | grad: 0.29 | tok/s: 291418 | tokens: 3932.2M | train_time: 3.76h | wall_time: 3.77h
+step   2020/2700 | loss: 3.0710 | ppl: 21.6 | lr: 7.17e-05 | grad: 0.30 | tok/s: 291159 | tokens: 3971.5M | train_time: 3.79h | wall_time: 3.81h
+step   2040/2700 | loss: 3.0897 | ppl: 22.0 | lr: 6.94e-05 | grad: 0.29 | tok/s: 291500 | tokens: 4010.8M | train_time: 3.83h | wall_time: 3.85h
+step   2060/2700 | loss: 3.0275 | ppl: 20.6 | lr: 6.71e-05 | grad: 0.26 | tok/s: 291316 | tokens: 4050.1M | train_time: 3.87h | wall_time: 3.89h
+step   2080/2700 | loss: 2.9442 | ppl: 19.0 | lr: 6.50e-05 | grad: 0.26 | tok/s: 290936 | tokens: 4089.4M | train_time: 3.91h | wall_time: 3.93h
+step   2100/2700 | loss: 3.0151 | ppl: 20.4 | lr: 6.28e-05 | grad: 0.25 | tok/s: 290556 | tokens: 4128.8M | train_time: 3.94h | wall_time: 3.96h
+step   2120/2700 | loss: 3.0365 | ppl: 20.8 | lr: 6.08e-05 | grad: 0.27 | tok/s: 291113 | tokens: 4168.1M | train_time: 3.98h | wall_time: 4.00h
+step   2140/2700 | loss: 3.0464 | ppl: 21.0 | lr: 5.88e-05 | grad: 0.24 | tok/s: 291681 | tokens: 4207.4M | train_time: 4.02h | wall_time: 4.04h
+step   2160/2700 | loss: 3.0398 | ppl: 20.9 | lr: 5.68e-05 | grad: 0.25 | tok/s: 291204 | tokens: 4246.7M | train_time: 4.06h | wall_time: 4.08h
+step   2180/2700 | loss: 3.0292 | ppl: 20.7 | lr: 5.49e-05 | grad: 0.28 | tok/s: 291122 | tokens: 4286.1M | train_time: 4.09h | wall_time: 4.11h
+  → Checkpoint saved (val_loss: 3.2256)
+step   2200/2700 | loss: 3.0165 | val: 3.2256 | ppl: 20.4 | lr: 5.31e-05 | grad: 0.26 | tok/s: 292131 | tokens: 4325.4M | train_time: 4.13h | wall_time: 4.15h
+step   2220/2700 | loss: 3.0579 | ppl: 21.3 | lr: 5.13e-05 | grad: 0.24 | tok/s: 290090 | tokens: 4364.7M | train_time: 4.17h | wall_time: 4.19h
+step   2240/2700 | loss: 3.0286 | ppl: 20.7 | lr: 4.96e-05 | grad: 0.26 | tok/s: 292125 | tokens: 4404.0M | train_time: 4.21h | wall_time: 4.23h
+step   2260/2700 | loss: 3.0398 | ppl: 20.9 | lr: 4.80e-05 | grad: 0.24 | tok/s: 291545 | tokens: 4443.3M | train_time: 4.24h | wall_time: 4.27h
+step   2280/2700 | loss: 2.9942 | ppl: 20.0 | lr: 4.64e-05 | grad: 0.27 | tok/s: 291144 | tokens: 4482.7M | train_time: 4.28h | wall_time: 4.30h
+step   2300/2700 | loss: 3.0290 | ppl: 20.7 | lr: 4.49e-05 | grad: 0.24 | tok/s: 291366 | tokens: 4522.0M | train_time: 4.32h | wall_time: 4.34h
+step   2320/2700 | loss: 3.0428 | ppl: 21.0 | lr: 4.35e-05 | grad: 0.26 | tok/s: 291174 | tokens: 4561.3M | train_time: 4.36h | wall_time: 4.38h
+step   2340/2700 | loss: 3.0434 | ppl: 21.0 | lr: 4.21e-05 | grad: 0.23 | tok/s: 291731 | tokens: 4600.6M | train_time: 4.39h | wall_time: 4.42h
+step   2360/2700 | loss: 3.0577 | ppl: 21.3 | lr: 4.09e-05 | grad: 0.23 | tok/s: 291704 | tokens: 4639.9M | train_time: 4.43h | wall_time: 4.45h
+step   2380/2700 | loss: 2.9555 | ppl: 19.2 | lr: 3.96e-05 | grad: 0.24 | tok/s: 292086 | tokens: 4679.3M | train_time: 4.47h | wall_time: 4.49h
+  → Checkpoint saved (val_loss: 3.2089)
+step   2400/2700 | loss: 3.0387 | val: 3.2089 | ppl: 20.9 | lr: 3.85e-05 | grad: 0.23 | tok/s: 290339 | tokens: 4718.6M | train_time: 4.51h | wall_time: 4.53h
+step   2420/2700 | loss: 2.9812 | ppl: 19.7 | lr: 3.74e-05 | grad: 0.24 | tok/s: 290955 | tokens: 4757.9M | train_time: 4.54h | wall_time: 4.57h
+step   2440/2700 | loss: 3.0310 | ppl: 20.7 | lr: 3.64e-05 | grad: 0.24 | tok/s: 280533 | tokens: 4797.2M | train_time: 4.58h | wall_time: 4.60h
+step   2460/2700 | loss: 3.0319 | ppl: 20.7 | lr: 3.54e-05 | grad: 0.23 | tok/s: 291332 | tokens: 4836.6M | train_time: 4.62h | wall_time: 4.64h
+step   2480/2700 | loss: 3.0873 | ppl: 21.9 | lr: 3.46e-05 | grad: 0.23 | tok/s: 290781 | tokens: 4875.9M | train_time: 4.66h | wall_time: 4.68h
+step   2500/2700 | loss: 3.0062 | ppl: 20.2 | lr: 3.38e-05 | grad: 0.23 | tok/s: 291772 | tokens: 4915.2M | train_time: 4.69h | wall_time: 4.72h
+step   2520/2700 | loss: 3.0240 | ppl: 20.6 | lr: 3.31e-05 | grad: 0.23 | tok/s: 291763 | tokens: 4954.5M | train_time: 4.73h | wall_time: 4.75h
+step   2540/2700 | loss: 3.0026 | ppl: 20.1 | lr: 3.24e-05 | grad: 0.23 | tok/s: 290564 | tokens: 4993.8M | train_time: 4.77h | wall_time: 4.79h
+step   2560/2700 | loss: 3.0333 | ppl: 20.8 | lr: 3.19e-05 | grad: 0.23 | tok/s: 291338 | tokens: 5033.2M | train_time: 4.81h | wall_time: 4.83h
+step   2580/2700 | loss: 2.9952 | ppl: 20.0 | lr: 3.14e-05 | grad: 0.22 | tok/s: 291551 | tokens: 5072.5M | train_time: 4.84h | wall_time: 4.87h
+  → Checkpoint saved (val_loss: 3.2009)
+step   2600/2700 | loss: 3.0017 | val: 3.2009 | ppl: 20.1 | lr: 3.10e-05 | grad: 0.23 | tok/s: 291690 | tokens: 5111.8M | train_time: 4.88h | wall_time: 4.90h
+step   2620/2700 | loss: 3.0438 | ppl: 21.0 | lr: 3.06e-05 | grad: 0.23 | tok/s: 292082 | tokens: 5151.1M | train_time: 4.92h | wall_time: 4.94h
+step   2640/2700 | loss: 3.0102 | ppl: 20.3 | lr: 3.03e-05 | grad: 0.24 | tok/s: 290914 | tokens: 5190.5M | train_time: 4.96h | wall_time: 4.98h
+step   2660/2700 | loss: 3.0700 | ppl: 21.5 | lr: 3.02e-05 | grad: 0.23 | tok/s: 290930 | tokens: 5229.8M | train_time: 4.99h | wall_time: 5.02h
+step   2680/2700 | loss: 3.0818 | ppl: 21.8 | lr: 3.00e-05 | grad: 0.24 | tok/s: 290857 | tokens: 5269.1M | train_time: 5.03h | wall_time: 5.06h
+step   2700/2700 | loss: 2.9875 | ppl: 19.8 | lr: 3.00e-05 | grad: 0.24 | tok/s: 290771 | tokens: 5308.4M | train_time: 5.07h | wall_time: 5.09h
+
+-----------------Final Validation-----------------
+Final validation loss: 3.2022
+Final validation perplexity: 24.59
+
+======================================================================
+TRAINING COMPLETE
+======================================================================
+Total steps: 2700
+Total tokens: 5308.4M
+Training time: 5.07h
+Wall time: 5.10h
+Average throughput: 290904 tokens/sec
+Final train loss: 2.9875
+Final val loss: 3.2022
+Best val loss: 3.2009
+Mode: fp8_tensorwise
+Log saved to: experiments/scaling_250M_fp8.csv
+Best checkpoint saved to: checkpoints/scaling_250M_fp8.pt
+======================================================================
+
+[Tue Dec 23 00:40:01 UTC 2025] 250M FP8 complete!
+======================================================================
+
+[Tue Dec 23 00:40:01 UTC 2025] Starting 350M FP8 run...
+  Tokens: 8.35B | Steps: 4110 | Batch: 64x31
+
+======================================================================
+FP8 TRAINING - FULL FEATURED
+======================================================================
+
+------------------Configuration-------------------
+Device: NVIDIA H100 80GB HBM3
+Mode: fp8_tensorwise
+Steps: 4110 (optimizer steps)
+Micro batch size: 64
+Gradient accumulation: 31
+Effective batch size: 1984 sequences
+Sequence length: 1024
+Tokens per step: 2,031,616
+Learning rate: 0.0003 (warmup: 82 steps, min: 3e-05)
+Validation every: 200 steps
+Model preset: 350M
+
+----------------------Model-----------------------
+Parameters: 0.42B (417.5M)
+Layers: 24
+Heads: 16 (KV: 4)
+Embed dim: 1024
+
+------------------FP8 Conversion------------------
+Converted 121/169 Linear layers to Float8Linear
+
+-------------------Compilation--------------------
+Compiling model with torch.compile()...
+
+-----------------------Data-----------------------
+Data: 100 shards, ~10.00B tokens total
+Data: 1 shards, ~0.10B tokens total
+Train data: data/pretrain/train_*.bin
+Val data: data/pretrain/val_*.bin
+Tokens per optimizer step: 2,031,616
+Total tokens: 8349.9M (8.35B)
+
+---------------------Logging----------------------
+Log file: experiments/scaling_350M_fp8.csv
+Checkpoint: checkpoints/scaling_350M_fp8.pt
+Checkpoint strategy: Save best validation loss (overwrites)
+
+======================================================================
+Starting training...
+======================================================================
+
+step      1/4110 | loss: 10.8051 | ppl: 49272.5 | lr: 3.66e-06 | grad: 0.56 | tok/s: 55532 | tokens: 2.0M | train_time: 36.6s | wall_time: 36.6s
+step     20/4110 | loss: 9.7627 | ppl: 17373.9 | lr: 7.32e-05 | grad: 3.40 | tok/s: 185746 | tokens: 40.6M | train_time: 4.1m | wall_time: 4.1m
+step     40/4110 | loss: 7.9527 | ppl: 2843.1 | lr: 1.46e-04 | grad: 3.05 | tok/s: 185592 | tokens: 81.3M | train_time: 7.7m | wall_time: 7.7m
+step     60/4110 | loss: 7.2181 | ppl: 1363.9 | lr: 2.20e-04 | grad: 1.08 | tok/s: 186030 | tokens: 121.9M | train_time: 11.4m | wall_time: 11.4m
+step     80/4110 | loss: 6.9252 | ppl: 1017.6 | lr: 2.93e-04 | grad: 0.98 | tok/s: 185567 | tokens: 162.5M | train_time: 15.0m | wall_time: 15.0m
+step    100/4110 | loss: 6.9014 | ppl: 993.7 | lr: 3.00e-04 | grad: 0.31 | tok/s: 185570 | tokens: 203.2M | train_time: 18.7m | wall_time: 18.7m
+step    120/4110 | loss: 6.6895 | ppl: 803.9 | lr: 3.00e-04 | grad: 0.59 | tok/s: 184982 | tokens: 243.8M | train_time: 22.3m | wall_time: 22.3m
+step    140/4110 | loss: 6.3080 | ppl: 548.9 | lr: 3.00e-04 | grad: 0.64 | tok/s: 182438 | tokens: 284.4M | train_time: 26.0m | wall_time: 26.0m
+step    160/4110 | loss: 6.2197 | ppl: 502.6 | lr: 3.00e-04 | grad: 0.73 | tok/s: 185084 | tokens: 325.1M | train_time: 29.7m | wall_time: 29.7m
+step    180/4110 | loss: 6.1652 | ppl: 475.9 | lr: 3.00e-04 | grad: 1.43 | tok/s: 184381 | tokens: 365.7M | train_time: 33.3m | wall_time: 33.3m
+  → Checkpoint saved (val_loss: 5.9912)
+step    200/4110 | loss: 5.9356 | val: 5.9912 | ppl: 378.3 | lr: 2.99e-04 | grad: 0.71 | tok/s: 185116 | tokens: 406.3M | train_time: 37.0m | wall_time: 37.0m
+step    220/4110 | loss: 5.8610 | ppl: 351.1 | lr: 2.99e-04 | grad: 1.21 | tok/s: 184085 | tokens: 447.0M | train_time: 40.7m | wall_time: 41.3m
+step    240/4110 | loss: 5.8209 | ppl: 337.3 | lr: 2.99e-04 | grad: 1.67 | tok/s: 182240 | tokens: 487.6M | train_time: 44.3m | wall_time: 45.0m
+step    260/4110 | loss: 5.6843 | ppl: 294.2 | lr: 2.99e-04 | grad: 0.63 | tok/s: 184597 | tokens: 528.2M | train_time: 48.0m | wall_time: 48.7m
+step    280/4110 | loss: 5.6020 | ppl: 271.0 | lr: 2.98e-04 | grad: 1.10 | tok/s: 183861 | tokens: 568.9M | train_time: 51.7m | wall_time: 52.4m
+step    300/4110 | loss: 5.5710 | ppl: 262.7 | lr: 2.98e-04 | grad: 1.20 | tok/s: 184149 | tokens: 609.5M | train_time: 55.4m | wall_time: 56.0m
+step    320/4110 | loss: 5.3752 | ppl: 216.0 | lr: 2.98e-04 | grad: 0.57 | tok/s: 183585 | tokens: 650.1M | train_time: 59.1m | wall_time: 59.7m
+step    340/4110 | loss: 5.3802 | ppl: 217.1 | lr: 2.97e-04 | grad: 1.02 | tok/s: 183828 | tokens: 690.7M | train_time: 1.05h | wall_time: 1.06h
+step    360/4110 | loss: 5.2211 | ppl: 185.1 | lr: 2.97e-04 | grad: 0.90 | tok/s: 183716 | tokens: 731.4M | train_time: 1.11h | wall_time: 1.12h
+step    380/4110 | loss: 5.2551 | ppl: 191.5 | lr: 2.96e-04 | grad: 0.69 | tok/s: 183534 | tokens: 772.0M | train_time: 1.17h | wall_time: 1.18h
+  → Checkpoint saved (val_loss: 5.1401)
+step    400/4110 | loss: 5.1831 | val: 5.1401 | ppl: 178.2 | lr: 2.96e-04 | grad: 0.70 | tok/s: 183958 | tokens: 812.6M | train_time: 1.23h | wall_time: 1.24h
+step    420/4110 | loss: 5.0632 | ppl: 158.1 | lr: 2.95e-04 | grad: 1.08 | tok/s: 184447 | tokens: 853.3M | train_time: 1.29h | wall_time: 1.30h
+step    440/4110 | loss: 4.9906 | ppl: 147.0 | lr: 2.95e-04 | grad: 0.59 | tok/s: 183528 | tokens: 893.9M | train_time: 1.35h | wall_time: 1.37h
+step    460/4110 | loss: 4.9412 | ppl: 139.9 | lr: 2.94e-04 | grad: 0.46 | tok/s: 183764 | tokens: 934.5M | train_time: 1.41h | wall_time: 1.43h
+step    480/4110 | loss: 4.8662 | ppl: 129.8 | lr: 2.94e-04 | grad: 0.50 | tok/s: 183836 | tokens: 975.2M | train_time: 1.48h | wall_time: 1.49h
+step    500/4110 | loss: 4.8415 | ppl: 126.7 | lr: 2.93e-04 | grad: 0.54 | tok/s: 184058 | tokens: 1015.8M | train_time: 1.54h | wall_time: 1.55h
+step    520/4110 | loss: 4.7713 | ppl: 118.1 | lr: 2.92e-04 | grad: 0.38 | tok/s: 183925 | tokens: 1056.4M | train_time: 1.60h | wall_time: 1.61h
+step    540/4110 | loss: 4.6783 | ppl: 107.6 | lr: 2.91e-04 | grad: 0.31 | tok/s: 184187 | tokens: 1097.1M | train_time: 1.66h | wall_time: 1.67h
+step    560/4110 | loss: 4.6546 | ppl: 105.1 | lr: 2.91e-04 | grad: 0.39 | tok/s: 183900 | tokens: 1137.7M | train_time: 1.72h | wall_time: 1.74h
+step    580/4110 | loss: 4.6057 | ppl: 100.1 | lr: 2.90e-04 | grad: 0.90 | tok/s: 183989 | tokens: 1178.3M | train_time: 1.78h | wall_time: 1.80h
+  → Checkpoint saved (val_loss: 4.5684)
+step    600/4110 | loss: 4.5887 | val: 4.5684 | ppl: 98.4 | lr: 2.89e-04 | grad: 0.63 | tok/s: 183657 | tokens: 1219.0M | train_time: 1.84h | wall_time: 1.86h
+step    620/4110 | loss: 4.4392 | ppl: 84.7 | lr: 2.88e-04 | grad: 0.30 | tok/s: 183431 | tokens: 1259.6M | train_time: 1.91h | wall_time: 1.92h
+step    640/4110 | loss: 4.4455 | ppl: 85.2 | lr: 2.87e-04 | grad: 0.31 | tok/s: 179770 | tokens: 1300.2M | train_time: 1.97h | wall_time: 1.98h
+step    660/4110 | loss: 4.4545 | ppl: 86.0 | lr: 2.87e-04 | grad: 0.41 | tok/s: 183813 | tokens: 1340.9M | train_time: 2.03h | wall_time: 2.04h
+step    680/4110 | loss: 4.3434 | ppl: 77.0 | lr: 2.86e-04 | grad: 0.55 | tok/s: 184454 | tokens: 1381.5M | train_time: 2.09h | wall_time: 2.11h
+step    700/4110 | loss: 4.2280 | ppl: 68.6 | lr: 2.85e-04 | grad: 0.37 | tok/s: 184395 | tokens: 1422.1M | train_time: 2.15h | wall_time: 2.17h
+step    720/4110 | loss: 4.2813 | ppl: 72.3 | lr: 2.84e-04 | grad: 0.49 | tok/s: 176149 | tokens: 1462.8M | train_time: 2.21h | wall_time: 2.23h
+step    740/4110 | loss: 4.1830 | ppl: 65.6 | lr: 2.83e-04 | grad: 0.35 | tok/s: 183920 | tokens: 1503.4M | train_time: 2.27h | wall_time: 2.29h
+step    760/4110 | loss: 4.1851 | ppl: 65.7 | lr: 2.82e-04 | grad: 0.34 | tok/s: 183346 | tokens: 1544.0M | train_time: 2.34h | wall_time: 2.35h
+step    780/4110 | loss: 4.0877 | ppl: 59.6 | lr: 2.80e-04 | grad: 0.38 | tok/s: 183792 | tokens: 1584.7M | train_time: 2.40h | wall_time: 2.41h
+  → Checkpoint saved (val_loss: 4.1742)
+step    800/4110 | loss: 4.0908 | val: 4.1742 | ppl: 59.8 | lr: 2.79e-04 | grad: 0.40 | tok/s: 183617 | tokens: 1625.3M | train_time: 2.46h | wall_time: 2.47h
+step    820/4110 | loss: 4.0386 | ppl: 56.7 | lr: 2.78e-04 | grad: 0.41 | tok/s: 183735 | tokens: 1665.9M | train_time: 2.52h | wall_time: 2.54h
+step    840/4110 | loss: 4.0035 | ppl: 54.8 | lr: 2.77e-04 | grad: 0.35 | tok/s: 183171 | tokens: 1706.6M | train_time: 2.58h | wall_time: 2.60h
+step    860/4110 | loss: 3.9801 | ppl: 53.5 | lr: 2.76e-04 | grad: 0.95 | tok/s: 183859 | tokens: 1747.2M | train_time: 2.64h | wall_time: 2.66h
+step    880/4110 | loss: 3.8518 | ppl: 47.1 | lr: 2.75e-04 | grad: 0.40 | tok/s: 183978 | tokens: 1787.8M | train_time: 2.71h | wall_time: 2.72h
+step    900/4110 | loss: 3.8557 | ppl: 47.3 | lr: 2.73e-04 | grad: 0.57 | tok/s: 183761 | tokens: 1828.5M | train_time: 2.77h | wall_time: 2.78h
+step    920/4110 | loss: 3.7852 | ppl: 44.0 | lr: 2.72e-04 | grad: 0.47 | tok/s: 184140 | tokens: 1869.1M | train_time: 2.83h | wall_time: 2.85h
+step    940/4110 | loss: 3.8626 | ppl: 47.6 | lr: 2.71e-04 | grad: 0.54 | tok/s: 184228 | tokens: 1909.7M | train_time: 2.89h | wall_time: 2.91h
+step    960/4110 | loss: 3.7234 | ppl: 41.4 | lr: 2.70e-04 | grad: 0.40 | tok/s: 183489 | tokens: 1950.4M | train_time: 2.95h | wall_time: 2.97h
+step    980/4110 | loss: 3.6516 | ppl: 38.5 | lr: 2.68e-04 | grad: 0.31 | tok/s: 183342 | tokens: 1991.0M | train_time: 3.01h | wall_time: 3.03h
+  → Checkpoint saved (val_loss: 3.7773)
+step   1000/4110 | loss: 3.7471 | val: 3.7773 | ppl: 42.4 | lr: 2.67e-04 | grad: 0.53 | tok/s: 183497 | tokens: 2031.6M | train_time: 3.07h | wall_time: 3.09h
+step   1020/4110 | loss: 3.5844 | ppl: 36.0 | lr: 2.65e-04 | grad: 0.56 | tok/s: 183395 | tokens: 2072.2M | train_time: 3.14h | wall_time: 3.16h
+step   1040/4110 | loss: 3.5314 | ppl: 34.2 | lr: 2.64e-04 | grad: 0.39 | tok/s: 183405 | tokens: 2112.9M | train_time: 3.20h | wall_time: 3.22h
+step   1060/4110 | loss: 3.5463 | ppl: 34.7 | lr: 2.63e-04 | grad: 0.29 | tok/s: 183809 | tokens: 2153.5M | train_time: 3.26h | wall_time: 3.28h
+step   1080/4110 | loss: 3.4420 | ppl: 31.2 | lr: 2.61e-04 | grad: 0.32 | tok/s: 183704 | tokens: 2194.1M | train_time: 3.32h | wall_time: 3.34h
+step   1100/4110 | loss: 3.4797 | ppl: 32.5 | lr: 2.60e-04 | grad: 0.38 | tok/s: 183750 | tokens: 2234.8M | train_time: 3.38h | wall_time: 3.40h
+step   1120/4110 | loss: 3.3849 | ppl: 29.5 | lr: 2.58e-04 | grad: 0.37 | tok/s: 183456 | tokens: 2275.4M | train_time: 3.44h | wall_time: 3.46h
+step   1140/4110 | loss: 3.4013 | ppl: 30.0 | lr: 2.57e-04 | grad: 0.43 | tok/s: 183642 | tokens: 2316.0M | train_time: 3.51h | wall_time: 3.53h
+step   1160/4110 | loss: 3.4471 | ppl: 31.4 | lr: 2.55e-04 | grad: 0.36 | tok/s: 183832 | tokens: 2356.7M | train_time: 3.57h | wall_time: 3.59h
+step   1180/4110 | loss: 3.4177 | ppl: 30.5 | lr: 2.53e-04 | grad: 0.48 | tok/s: 183466 | tokens: 2397.3M | train_time: 3.63h | wall_time: 3.65h
+  → Checkpoint saved (val_loss: 3.5123)
+step   1200/4110 | loss: 3.3025 | val: 3.5123 | ppl: 27.2 | lr: 2.52e-04 | grad: 0.29 | tok/s: 183628 | tokens: 2437.9M | train_time: 3.69h | wall_time: 3.71h
+step   1220/4110 | loss: 3.3230 | ppl: 27.7 | lr: 2.50e-04 | grad: 0.42 | tok/s: 183567 | tokens: 2478.6M | train_time: 3.75h | wall_time: 3.77h
+step   1240/4110 | loss: 3.2753 | ppl: 26.5 | lr: 2.49e-04 | grad: 0.28 | tok/s: 183573 | tokens: 2519.2M | train_time: 3.81h | wall_time: 3.84h
+step   1260/4110 | loss: 3.3327 | ppl: 28.0 | lr: 2.47e-04 | grad: 0.31 | tok/s: 183469 | tokens: 2559.8M | train_time: 3.87h | wall_time: 3.90h
+step   1280/4110 | loss: 3.3238 | ppl: 27.8 | lr: 2.45e-04 | grad: 0.33 | tok/s: 179863 | tokens: 2600.5M | train_time: 3.94h | wall_time: 3.96h
+step   1300/4110 | loss: 3.3307 | ppl: 28.0 | lr: 2.44e-04 | grad: 0.63 | tok/s: 183942 | tokens: 2641.1M | train_time: 4.00h | wall_time: 4.02h
+step   1320/4110 | loss: 3.2368 | ppl: 25.5 | lr: 2.42e-04 | grad: 0.32 | tok/s: 183880 | tokens: 2681.7M | train_time: 4.06h | wall_time: 4.08h
+step   1340/4110 | loss: 3.2612 | ppl: 26.1 | lr: 2.40e-04 | grad: 0.26 | tok/s: 183321 | tokens: 2722.4M | train_time: 4.12h | wall_time: 4.14h
+step   1360/4110 | loss: 3.2047 | ppl: 24.6 | lr: 2.38e-04 | grad: 0.32 | tok/s: 183532 | tokens: 2763.0M | train_time: 4.18h | wall_time: 4.20h
+step   1380/4110 | loss: 3.2710 | ppl: 26.3 | lr: 2.37e-04 | grad: 0.28 | tok/s: 183545 | tokens: 2803.6M | train_time: 4.24h | wall_time: 4.27h
+  → Checkpoint saved (val_loss: 3.3547)
+step   1400/4110 | loss: 3.1764 | val: 3.3547 | ppl: 24.0 | lr: 2.35e-04 | grad: 0.28 | tok/s: 183808 | tokens: 2844.3M | train_time: 4.30h | wall_time: 4.33h
+step   1420/4110 | loss: 3.1649 | ppl: 23.7 | lr: 2.33e-04 | grad: 0.28 | tok/s: 183767 | tokens: 2884.9M | train_time: 4.37h | wall_time: 4.39h
+step   1440/4110 | loss: 3.1887 | ppl: 24.3 | lr: 2.31e-04 | grad: 0.29 | tok/s: 183450 | tokens: 2925.5M | train_time: 4.43h | wall_time: 4.45h
+step   1460/4110 | loss: 3.1623 | ppl: 23.6 | lr: 2.29e-04 | grad: 0.37 | tok/s: 183831 | tokens: 2966.2M | train_time: 4.49h | wall_time: 4.51h
+step   1480/4110 | loss: 3.1062 | ppl: 22.3 | lr: 2.27e-04 | grad: 0.35 | tok/s: 183733 | tokens: 3006.8M | train_time: 4.55h | wall_time: 4.58h
+step   1500/4110 | loss: 3.0855 | ppl: 21.9 | lr: 2.26e-04 | grad: 0.43 | tok/s: 183858 | tokens: 3047.4M | train_time: 4.61h | wall_time: 4.64h
+step   1520/4110 | loss: 3.1191 | ppl: 22.6 | lr: 2.24e-04 | grad: 0.28 | tok/s: 183924 | tokens: 3088.1M | train_time: 4.67h | wall_time: 4.70h
+step   1540/4110 | loss: 3.1386 | ppl: 23.1 | lr: 2.22e-04 | grad: 0.23 | tok/s: 183578 | tokens: 3128.7M | train_time: 4.73h | wall_time: 4.76h
+step   1560/4110 | loss: 3.0302 | ppl: 20.7 | lr: 2.20e-04 | grad: 0.30 | tok/s: 183934 | tokens: 3169.3M | train_time: 4.80h | wall_time: 4.82h
+step   1580/4110 | loss: 3.0512 | ppl: 21.1 | lr: 2.18e-04 | grad: 0.28 | tok/s: 183910 | tokens: 3210.0M | train_time: 4.86h | wall_time: 4.88h
+  → Checkpoint saved (val_loss: 3.2460)
+step   1600/4110 | loss: 3.0172 | val: 3.2460 | ppl: 20.4 | lr: 2.16e-04 | grad: 0.22 | tok/s: 184555 | tokens: 3250.6M | train_time: 4.92h | wall_time: 4.94h
+step   1620/4110 | loss: 3.0488 | ppl: 21.1 | lr: 2.14e-04 | grad: 0.24 | tok/s: 183697 | tokens: 3291.2M | train_time: 4.98h | wall_time: 5.01h
+step   1640/4110 | loss: 3.0539 | ppl: 21.2 | lr: 2.12e-04 | grad: 0.23 | tok/s: 183613 | tokens: 3331.9M | train_time: 5.04h | wall_time: 5.07h
+step   1660/4110 | loss: 3.0409 | ppl: 20.9 | lr: 2.10e-04 | grad: 0.25 | tok/s: 183824 | tokens: 3372.5M | train_time: 5.10h | wall_time: 5.13h
+step   1680/4110 | loss: 3.0679 | ppl: 21.5 | lr: 2.08e-04 | grad: 0.26 | tok/s: 184039 | tokens: 3413.1M | train_time: 5.16h | wall_time: 5.19h
+step   1700/4110 | loss: 3.0202 | ppl: 20.5 | lr: 2.06e-04 | grad: 0.25 | tok/s: 183811 | tokens: 3453.7M | train_time: 5.23h | wall_time: 5.25h
+step   1720/4110 | loss: 2.9928 | ppl: 19.9 | lr: 2.04e-04 | grad: 0.25 | tok/s: 183937 | tokens: 3494.4M | train_time: 5.29h | wall_time: 5.32h
+step   1740/4110 | loss: 3.0155 | ppl: 20.4 | lr: 2.02e-04 | grad: 0.24 | tok/s: 184036 | tokens: 3535.0M | train_time: 5.35h | wall_time: 5.38h
+step   1760/4110 | loss: 3.0433 | ppl: 21.0 | lr: 2.00e-04 | grad: 0.23 | tok/s: 183503 | tokens: 3575.6M | train_time: 5.41h | wall_time: 5.44h
+step   1780/4110 | loss: 3.0247 | ppl: 20.6 | lr: 1.98e-04 | grad: 0.25 | tok/s: 184055 | tokens: 3616.3M | train_time: 5.47h | wall_time: 5.50h
+  → Checkpoint saved (val_loss: 3.1706)
+step   1800/4110 | loss: 2.9812 | val: 3.1706 | ppl: 19.7 | lr: 1.96e-04 | grad: 0.25 | tok/s: 183298 | tokens: 3656.9M | train_time: 5.53h | wall_time: 5.56h
+step   1820/4110 | loss: 2.9690 | ppl: 19.5 | lr: 1.94e-04 | grad: 0.24 | tok/s: 183569 | tokens: 3697.5M | train_time: 5.60h | wall_time: 5.63h
+step   1840/4110 | loss: 2.9104 | ppl: 18.4 | lr: 1.92e-04 | grad: 0.21 | tok/s: 183367 | tokens: 3738.2M | train_time: 5.66h | wall_time: 5.69h
+step   1860/4110 | loss: 2.9080 | ppl: 18.3 | lr: 1.90e-04 | grad: 0.26 | tok/s: 183344 | tokens: 3778.8M | train_time: 5.72h | wall_time: 5.75h
+step   1880/4110 | loss: 2.9525 | ppl: 19.2 | lr: 1.88e-04 | grad: 0.23 | tok/s: 183737 | tokens: 3819.4M | train_time: 5.78h | wall_time: 5.81h
+step   1900/4110 | loss: 2.9764 | ppl: 19.6 | lr: 1.86e-04 | grad: 0.27 | tok/s: 183197 | tokens: 3860.1M | train_time: 5.84h | wall_time: 5.87h
+step   1920/4110 | loss: 2.9033 | ppl: 18.2 | lr: 1.83e-04 | grad: 0.26 | tok/s: 183847 | tokens: 3900.7M | train_time: 5.90h | wall_time: 5.93h
+step   1940/4110 | loss: 2.8981 | ppl: 18.1 | lr: 1.81e-04 | grad: 0.24 | tok/s: 183635 | tokens: 3941.3M | train_time: 5.96h | wall_time: 5.99h
+step   1960/4110 | loss: 2.9274 | ppl: 18.7 | lr: 1.79e-04 | grad: 0.26 | tok/s: 183730 | tokens: 3982.0M | train_time: 6.03h | wall_time: 6.06h
+step   1980/4110 | loss: 2.9345 | ppl: 18.8 | lr: 1.77e-04 | grad: 0.25 | tok/s: 183842 | tokens: 4022.6M | train_time: 6.09h | wall_time: 6.12h
+  → Checkpoint saved (val_loss: 3.1074)
+step   2000/4110 | loss: 2.8990 | val: 3.1074 | ppl: 18.2 | lr: 1.75e-04 | grad: 0.24 | tok/s: 183768 | tokens: 4063.2M | train_time: 6.15h | wall_time: 6.18h
+step   2020/4110 | loss: 2.9131 | ppl: 18.4 | lr: 1.73e-04 | grad: 0.21 | tok/s: 183924 | tokens: 4103.9M | train_time: 6.21h | wall_time: 6.24h
+step   2040/4110 | loss: 2.8774 | ppl: 17.8 | lr: 1.71e-04 | grad: 0.22 | tok/s: 183614 | tokens: 4144.5M | train_time: 6.27h | wall_time: 6.30h
+step   2060/4110 | loss: 2.8740 | ppl: 17.7 | lr: 1.69e-04 | grad: 0.26 | tok/s: 183522 | tokens: 4185.1M | train_time: 6.33h | wall_time: 6.37h
+step   2080/4110 | loss: 2.8847 | ppl: 17.9 | lr: 1.67e-04 | grad: 0.26 | tok/s: 183903 | tokens: 4225.8M | train_time: 6.39h | wall_time: 6.43h
+step   2100/4110 | loss: 2.8310 | ppl: 17.0 | lr: 1.65e-04 | grad: 0.21 | tok/s: 183673 | tokens: 4266.4M | train_time: 6.46h | wall_time: 6.49h
+step   2120/4110 | loss: 2.8959 | ppl: 18.1 | lr: 1.62e-04 | grad: 0.27 | tok/s: 183743 | tokens: 4307.0M | train_time: 6.52h | wall_time: 6.55h
+step   2140/4110 | loss: 2.8499 | ppl: 17.3 | lr: 1.60e-04 | grad: 0.20 | tok/s: 183487 | tokens: 4347.7M | train_time: 6.58h | wall_time: 6.61h
+step   2160/4110 | loss: 2.8903 | ppl: 18.0 | lr: 1.58e-04 | grad: 0.27 | tok/s: 184167 | tokens: 4388.3M | train_time: 6.64h | wall_time: 6.67h
+step   2180/4110 | loss: 2.8627 | ppl: 17.5 | lr: 1.56e-04 | grad: 0.20 | tok/s: 183942 | tokens: 4428.9M | train_time: 6.70h | wall_time: 6.73h
+  → Checkpoint saved (val_loss: 3.0590)
+step   2200/4110 | loss: 2.8549 | val: 3.0590 | ppl: 17.4 | lr: 1.54e-04 | grad: 0.25 | tok/s: 184503 | tokens: 4469.6M | train_time: 6.76h | wall_time: 6.80h
+step   2220/4110 | loss: 2.8593 | ppl: 17.4 | lr: 1.52e-04 | grad: 0.21 | tok/s: 183375 | tokens: 4510.2M | train_time: 6.82h | wall_time: 6.86h
+step   2240/4110 | loss: 2.8607 | ppl: 17.5 | lr: 1.50e-04 | grad: 0.22 | tok/s: 183902 | tokens: 4550.8M | train_time: 6.89h | wall_time: 6.92h
+step   2260/4110 | loss: 2.8711 | ppl: 17.7 | lr: 1.48e-04 | grad: 0.21 | tok/s: 184130 | tokens: 4591.5M | train_time: 6.95h | wall_time: 6.98h
+step   2280/4110 | loss: 2.8934 | ppl: 18.1 | lr: 1.46e-04 | grad: 0.21 | tok/s: 184120 | tokens: 4632.1M | train_time: 7.01h | wall_time: 7.04h
+step   2300/4110 | loss: 2.8629 | ppl: 17.5 | lr: 1.44e-04 | grad: 0.22 | tok/s: 183864 | tokens: 4672.7M | train_time: 7.07h | wall_time: 7.11h
+step   2320/4110 | loss: 2.8952 | ppl: 18.1 | lr: 1.42e-04 | grad: 0.24 | tok/s: 183355 | tokens: 4713.3M | train_time: 7.13h | wall_time: 7.17h
+step   2340/4110 | loss: 2.9317 | ppl: 18.8 | lr: 1.39e-04 | grad: 0.25 | tok/s: 183699 | tokens: 4754.0M | train_time: 7.19h | wall_time: 7.23h
+step   2360/4110 | loss: 2.8612 | ppl: 17.5 | lr: 1.37e-04 | grad: 0.21 | tok/s: 183632 | tokens: 4794.6M | train_time: 7.25h | wall_time: 7.29h
+step   2380/4110 | loss: 2.8437 | ppl: 17.2 | lr: 1.35e-04 | grad: 0.22 | tok/s: 183470 | tokens: 4835.2M | train_time: 7.32h | wall_time: 7.35h
+  → Checkpoint saved (val_loss: 3.0253)
+step   2400/4110 | loss: 2.8885 | val: 3.0253 | ppl: 18.0 | lr: 1.33e-04 | grad: 0.23 | tok/s: 184150 | tokens: 4875.9M | train_time: 7.38h | wall_time: 7.41h
+step   2420/4110 | loss: 2.7849 | ppl: 16.2 | lr: 1.31e-04 | grad: 0.20 | tok/s: 183895 | tokens: 4916.5M | train_time: 7.44h | wall_time: 7.48h
+step   2440/4110 | loss: 2.8027 | ppl: 16.5 | lr: 1.29e-04 | grad: 0.23 | tok/s: 184058 | tokens: 4957.1M | train_time: 7.50h | wall_time: 7.54h
+step   2460/4110 | loss: 2.8606 | ppl: 17.5 | lr: 1.27e-04 | grad: 0.21 | tok/s: 179843 | tokens: 4997.8M | train_time: 7.56h | wall_time: 7.60h
+step   2480/4110 | loss: 2.8282 | ppl: 16.9 | lr: 1.25e-04 | grad: 0.20 | tok/s: 183483 | tokens: 5038.4M | train_time: 7.62h | wall_time: 7.66h
+step   2500/4110 | loss: 2.7755 | ppl: 16.0 | lr: 1.23e-04 | grad: 0.21 | tok/s: 183602 | tokens: 5079.0M | train_time: 7.68h | wall_time: 7.72h
+step   2520/4110 | loss: 2.8604 | ppl: 17.5 | lr: 1.21e-04 | grad: 0.20 | tok/s: 183793 | tokens: 5119.7M | train_time: 7.75h | wall_time: 7.78h
+step   2540/4110 | loss: 2.7742 | ppl: 16.0 | lr: 1.19e-04 | grad: 0.20 | tok/s: 183581 | tokens: 5160.3M | train_time: 7.81h | wall_time: 7.85h
+step   2560/4110 | loss: 2.8329 | ppl: 17.0 | lr: 1.17e-04 | grad: 0.22 | tok/s: 184100 | tokens: 5200.9M | train_time: 7.87h | wall_time: 7.91h
+step   2580/4110 | loss: 2.8451 | ppl: 17.2 | lr: 1.15e-04 | grad: 0.20 | tok/s: 183876 | tokens: 5241.6M | train_time: 7.93h | wall_time: 7.97h
+  → Checkpoint saved (val_loss: 2.9881)
+step   2600/4110 | loss: 2.7834 | val: 2.9881 | ppl: 16.2 | lr: 1.13e-04 | grad: 0.22 | tok/s: 183686 | tokens: 5282.2M | train_time: 7.99h | wall_time: 8.03h
+step   2620/4110 | loss: 2.8016 | ppl: 16.5 | lr: 1.11e-04 | grad: 0.20 | tok/s: 183465 | tokens: 5322.8M | train_time: 8.05h | wall_time: 8.09h
+step   2640/4110 | loss: 2.7807 | ppl: 16.1 | lr: 1.09e-04 | grad: 0.21 | tok/s: 183986 | tokens: 5363.5M | train_time: 8.11h | wall_time: 8.16h
+step   2660/4110 | loss: 2.8738 | ppl: 17.7 | lr: 1.08e-04 | grad: 0.21 | tok/s: 183779 | tokens: 5404.1M | train_time: 8.18h | wall_time: 8.22h
+step   2680/4110 | loss: 2.8071 | ppl: 16.6 | lr: 1.06e-04 | grad: 0.21 | tok/s: 183914 | tokens: 5444.7M | train_time: 8.24h | wall_time: 8.28h
+step   2700/4110 | loss: 2.8183 | ppl: 16.7 | lr: 1.04e-04 | grad: 0.20 | tok/s: 183639 | tokens: 5485.4M | train_time: 8.30h | wall_time: 8.34h
+step   2720/4110 | loss: 2.7813 | ppl: 16.1 | lr: 1.02e-04 | grad: 0.20 | tok/s: 183573 | tokens: 5526.0M | train_time: 8.36h | wall_time: 8.40h
+step   2740/4110 | loss: 2.8407 | ppl: 17.1 | lr: 1.00e-04 | grad: 0.21 | tok/s: 184077 | tokens: 5566.6M | train_time: 8.42h | wall_time: 8.46h
+step   2760/4110 | loss: 2.7544 | ppl: 15.7 | lr: 9.82e-05 | grad: 0.20 | tok/s: 183748 | tokens: 5607.3M | train_time: 8.48h | wall_time: 8.52h
+step   2780/4110 | loss: 2.7765 | ppl: 16.1 | lr: 9.63e-05 | grad: 0.20 | tok/s: 183508 | tokens: 5647.9M | train_time: 8.55h | wall_time: 8.59h
+  → Checkpoint saved (val_loss: 2.9707)
+step   2800/4110 | loss: 2.7570 | val: 2.9707 | ppl: 15.8 | lr: 9.45e-05 | grad: 0.19 | tok/s: 183647 | tokens: 5688.5M | train_time: 8.61h | wall_time: 8.65h
+step   2820/4110 | loss: 2.8017 | ppl: 16.5 | lr: 9.28e-05 | grad: 0.20 | tok/s: 183766 | tokens: 5729.2M | train_time: 8.67h | wall_time: 8.71h
+step   2840/4110 | loss: 2.7666 | ppl: 15.9 | lr: 9.10e-05 | grad: 0.19 | tok/s: 183896 | tokens: 5769.8M | train_time: 8.73h | wall_time: 8.77h
+step   2860/4110 | loss: 2.7734 | ppl: 16.0 | lr: 8.92e-05 | grad: 0.19 | tok/s: 183592 | tokens: 5810.4M | train_time: 8.79h | wall_time: 8.83h
+step   2880/4110 | loss: 2.7970 | ppl: 16.4 | lr: 8.75e-05 | grad: 0.20 | tok/s: 183655 | tokens: 5851.1M | train_time: 8.85h | wall_time: 8.90h
+step   2900/4110 | loss: 2.8291 | ppl: 16.9 | lr: 8.58e-05 | grad: 0.20 | tok/s: 183301 | tokens: 5891.7M | train_time: 8.91h | wall_time: 8.96h
+step   2920/4110 | loss: 2.8218 | ppl: 16.8 | lr: 8.41e-05 | grad: 0.21 | tok/s: 184064 | tokens: 5932.3M | train_time: 8.98h | wall_time: 9.02h
+step   2940/4110 | loss: 2.7395 | ppl: 15.5 | lr: 8.24e-05 | grad: 0.20 | tok/s: 183659 | tokens: 5973.0M | train_time: 9.04h | wall_time: 9.08h
+step   2960/4110 | loss: 2.7603 | ppl: 15.8 | lr: 8.08e-05 | grad: 0.20 | tok/s: 183544 | tokens: 6013.6M | train_time: 9.10h | wall_time: 9.14h
+step   2980/4110 | loss: 2.8159 | ppl: 16.7 | lr: 7.91e-05 | grad: 0.21 | tok/s: 184120 | tokens: 6054.2M | train_time: 9.16h | wall_time: 9.20h
+  → Checkpoint saved (val_loss: 2.9512)
+step   3000/4110 | loss: 2.8382 | val: 2.9512 | ppl: 17.1 | lr: 7.75e-05 | grad: 0.20 | tok/s: 183435 | tokens: 6094.8M | train_time: 9.22h | wall_time: 9.26h
+step   3020/4110 | loss: 2.7118 | ppl: 15.1 | lr: 7.59e-05 | grad: 0.19 | tok/s: 184208 | tokens: 6135.5M | train_time: 9.28h | wall_time: 9.33h
+step   3040/4110 | loss: 2.7297 | ppl: 15.3 | lr: 7.43e-05 | grad: 0.20 | tok/s: 183679 | tokens: 6176.1M | train_time: 9.34h | wall_time: 9.39h
+step   3060/4110 | loss: 2.7444 | ppl: 15.6 | lr: 7.28e-05 | grad: 0.19 | tok/s: 183547 | tokens: 6216.7M | train_time: 9.41h | wall_time: 9.45h
+step   3080/4110 | loss: 2.7396 | ppl: 15.5 | lr: 7.13e-05 | grad: 0.19 | tok/s: 183480 | tokens: 6257.4M | train_time: 9.47h | wall_time: 9.51h
+step   3100/4110 | loss: 2.7936 | ppl: 16.3 | lr: 6.98e-05 | grad: 0.20 | tok/s: 180300 | tokens: 6298.0M | train_time: 9.53h | wall_time: 9.57h
+step   3120/4110 | loss: 2.8298 | ppl: 16.9 | lr: 6.83e-05 | grad: 0.20 | tok/s: 183818 | tokens: 6338.6M | train_time: 9.59h | wall_time: 9.64h
+step   3140/4110 | loss: 2.7606 | ppl: 15.8 | lr: 6.68e-05 | grad: 0.18 | tok/s: 183919 | tokens: 6379.3M | train_time: 9.65h | wall_time: 9.70h
+step   3160/4110 | loss: 2.8490 | ppl: 17.3 | lr: 6.54e-05 | grad: 0.20 | tok/s: 183329 | tokens: 6419.9M | train_time: 9.71h | wall_time: 9.76h
+step   3180/4110 | loss: 2.7330 | ppl: 15.4 | lr: 6.40e-05 | grad: 0.18 | tok/s: 183480 | tokens: 6460.5M | train_time: 9.77h | wall_time: 9.82h
+  → Checkpoint saved (val_loss: 2.9373)
+step   3200/4110 | loss: 2.7671 | val: 2.9373 | ppl: 15.9 | lr: 6.26e-05 | grad: 0.19 | tok/s: 183785 | tokens: 6501.2M | train_time: 9.84h | wall_time: 9.88h
+step   3220/4110 | loss: 2.7350 | ppl: 15.4 | lr: 6.12e-05 | grad: 0.19 | tok/s: 183315 | tokens: 6541.8M | train_time: 9.90h | wall_time: 9.95h
+step   3240/4110 | loss: 2.7326 | ppl: 15.4 | lr: 5.99e-05 | grad: 0.19 | tok/s: 183843 | tokens: 6582.4M | train_time: 9.96h | wall_time: 10.01h
+step   3260/4110 | loss: 2.8174 | ppl: 16.7 | lr: 5.86e-05 | grad: 0.20 | tok/s: 183819 | tokens: 6623.1M | train_time: 10.02h | wall_time: 10.07h
+step   3280/4110 | loss: 2.7333 | ppl: 15.4 | lr: 5.73e-05 | grad: 0.19 | tok/s: 183930 | tokens: 6663.7M | train_time: 10.08h | wall_time: 10.13h
+step   3300/4110 | loss: 2.7840 | ppl: 16.2 | lr: 5.61e-05 | grad: 0.19 | tok/s: 184332 | tokens: 6704.3M | train_time: 10.14h | wall_time: 10.19h
+step   3320/4110 | loss: 2.7510 | ppl: 15.7 | lr: 5.48e-05 | grad: 0.18 | tok/s: 183725 | tokens: 6745.0M | train_time: 10.20h | wall_time: 10.25h
+step   3340/4110 | loss: 2.7366 | ppl: 15.4 | lr: 5.36e-05 | grad: 0.18 | tok/s: 183630 | tokens: 6785.6M | train_time: 10.27h | wall_time: 10.31h
+step   3360/4110 | loss: 2.6996 | ppl: 14.9 | lr: 5.24e-05 | grad: 0.19 | tok/s: 184160 | tokens: 6826.2M | train_time: 10.33h | wall_time: 10.38h
+step   3380/4110 | loss: 2.7447 | ppl: 15.6 | lr: 5.13e-05 | grad: 0.18 | tok/s: 183717 | tokens: 6866.9M | train_time: 10.39h | wall_time: 10.44h
+  → Checkpoint saved (val_loss: 2.9235)
+step   3400/4110 | loss: 2.7958 | val: 2.9235 | ppl: 16.4 | lr: 5.02e-05 | grad: 0.19 | tok/s: 183547 | tokens: 6907.5M | train_time: 10.45h | wall_time: 10.50h
+step   3420/4110 | loss: 2.7231 | ppl: 15.2 | lr: 4.91e-05 | grad: 0.18 | tok/s: 183579 | tokens: 6948.1M | train_time: 10.51h | wall_time: 10.56h
+step   3440/4110 | loss: 2.6772 | ppl: 14.5 | lr: 4.80e-05 | grad: 0.19 | tok/s: 184023 | tokens: 6988.8M | train_time: 10.57h | wall_time: 10.62h
+step   3460/4110 | loss: 2.7402 | ppl: 15.5 | lr: 4.70e-05 | grad: 0.19 | tok/s: 183554 | tokens: 7029.4M | train_time: 10.64h | wall_time: 10.69h
+step   3480/4110 | loss: 2.7486 | ppl: 15.6 | lr: 4.60e-05 | grad: 0.18 | tok/s: 183736 | tokens: 7070.0M | train_time: 10.70h | wall_time: 10.75h
+step   3500/4110 | loss: 2.7438 | ppl: 15.5 | lr: 4.50e-05 | grad: 0.19 | tok/s: 183961 | tokens: 7110.7M | train_time: 10.76h | wall_time: 10.81h
+step   3520/4110 | loss: 2.6960 | ppl: 14.8 | lr: 4.40e-05 | grad: 0.18 | tok/s: 183610 | tokens: 7151.3M | train_time: 10.82h | wall_time: 10.87h
+step   3540/4110 | loss: 2.7686 | ppl: 15.9 | lr: 4.31e-05 | grad: 0.18 | tok/s: 183838 | tokens: 7191.9M | train_time: 10.88h | wall_time: 10.93h
+step   3560/4110 | loss: 2.7389 | ppl: 15.5 | lr: 4.22e-05 | grad: 0.18 | tok/s: 184209 | tokens: 7232.6M | train_time: 10.94h | wall_time: 10.99h
+step   3580/4110 | loss: 2.7577 | ppl: 15.8 | lr: 4.14e-05 | grad: 0.19 | tok/s: 183977 | tokens: 7273.2M | train_time: 11.00h | wall_time: 11.05h
+  → Checkpoint saved (val_loss: 2.9173)
+step   3600/4110 | loss: 2.7732 | val: 2.9173 | ppl: 16.0 | lr: 4.05e-05 | grad: 0.19 | tok/s: 183393 | tokens: 7313.8M | train_time: 11.07h | wall_time: 11.12h
+step   3620/4110 | loss: 2.7159 | ppl: 15.1 | lr: 3.97e-05 | grad: 0.18 | tok/s: 183608 | tokens: 7354.4M | train_time: 11.13h | wall_time: 11.18h
+step   3640/4110 | loss: 2.7140 | ppl: 15.1 | lr: 3.90e-05 | grad: 0.19 | tok/s: 183450 | tokens: 7395.1M | train_time: 11.19h | wall_time: 11.24h
+step   3660/4110 | loss: 2.7172 | ppl: 15.1 | lr: 3.82e-05 | grad: 0.18 | tok/s: 184112 | tokens: 7435.7M | train_time: 11.25h | wall_time: 11.30h
+step   3680/4110 | loss: 2.7166 | ppl: 15.1 | lr: 3.75e-05 | grad: 0.18 | tok/s: 183296 | tokens: 7476.3M | train_time: 11.31h | wall_time: 11.36h
+step   3700/4110 | loss: 2.7863 | ppl: 16.2 | lr: 3.68e-05 | grad: 0.18 | tok/s: 183726 | tokens: 7517.0M | train_time: 11.37h | wall_time: 11.43h
+step   3720/4110 | loss: 2.7853 | ppl: 16.2 | lr: 3.62e-05 | grad: 0.18 | tok/s: 183670 | tokens: 7557.6M | train_time: 11.43h | wall_time: 11.49h
+step   3740/4110 | loss: 2.6824 | ppl: 14.6 | lr: 3.56e-05 | grad: 0.19 | tok/s: 184404 | tokens: 7598.2M | train_time: 11.50h | wall_time: 11.55h
+step   3760/4110 | loss: 2.7034 | ppl: 14.9 | lr: 3.50e-05 | grad: 0.18 | tok/s: 184145 | tokens: 7638.9M | train_time: 11.56h | wall_time: 11.61h
+step   3780/4110 | loss: 2.7237 | ppl: 15.2 | lr: 3.44e-05 | grad: 0.18 | tok/s: 183453 | tokens: 7679.5M | train_time: 11.62h | wall_time: 11.67h
+  → Checkpoint saved (val_loss: 2.9127)
+step   3800/4110 | loss: 2.7330 | val: 2.9127 | ppl: 15.4 | lr: 3.39e-05 | grad: 0.18 | tok/s: 184181 | tokens: 7720.1M | train_time: 11.68h | wall_time: 11.73h
+step   3820/4110 | loss: 2.7027 | ppl: 14.9 | lr: 3.34e-05 | grad: 0.18 | tok/s: 183740 | tokens: 7760.8M | train_time: 11.74h | wall_time: 11.80h
+step   3840/4110 | loss: 2.7722 | ppl: 16.0 | lr: 3.30e-05 | grad: 0.18 | tok/s: 183763 | tokens: 7801.4M | train_time: 11.80h | wall_time: 11.86h
+step   3860/4110 | loss: 2.7719 | ppl: 16.0 | lr: 3.26e-05 | grad: 0.18 | tok/s: 183705 | tokens: 7842.0M | train_time: 11.86h | wall_time: 11.92h
+step   3880/4110 | loss: 2.7507 | ppl: 15.7 | lr: 3.22e-05 | grad: 0.19 | tok/s: 183863 | tokens: 7882.7M | train_time: 11.93h | wall_time: 11.98h
+step   3900/4110 | loss: 2.7000 | ppl: 14.9 | lr: 3.18e-05 | grad: 0.18 | tok/s: 183882 | tokens: 7923.3M | train_time: 11.99h | wall_time: 12.04h
+step   3920/4110 | loss: 2.6974 | ppl: 14.8 | lr: 3.15e-05 | grad: 0.18 | tok/s: 183575 | tokens: 7963.9M | train_time: 12.05h | wall_time: 12.10h
+step   3940/4110 | loss: 2.7581 | ppl: 15.8 | lr: 3.12e-05 | grad: 0.18 | tok/s: 183938 | tokens: 8004.6M | train_time: 12.11h | wall_time: 12.17h
+step   3960/4110 | loss: 2.7116 | ppl: 15.1 | lr: 3.09e-05 | grad: 0.18 | tok/s: 183779 | tokens: 8045.2M | train_time: 12.17h | wall_time: 12.23h
+step   3980/4110 | loss: 2.7106 | ppl: 15.0 | lr: 3.07e-05 | grad: 0.18 | tok/s: 183786 | tokens: 8085.8M | train_time: 12.23h | wall_time: 12.29h
+  → Checkpoint saved (val_loss: 2.9092)
+step   4000/4110 | loss: 2.6928 | val: 2.9092 | ppl: 14.8 | lr: 3.05e-05 | grad: 0.18 | tok/s: 183553 | tokens: 8126.5M | train_time: 12.29h | wall_time: 12.35h
+step   4020/4110 | loss: 2.6937 | ppl: 14.8 | lr: 3.03e-05 | grad: 0.18 | tok/s: 183808 | tokens: 8167.1M | train_time: 12.36h | wall_time: 12.41h
+step   4040/4110 | loss: 2.7029 | ppl: 14.9 | lr: 3.02e-05 | grad: 0.18 | tok/s: 183847 | tokens: 8207.7M | train_time: 12.42h | wall_time: 12.47h
+step   4060/4110 | loss: 2.7486 | ppl: 15.6 | lr: 3.01e-05 | grad: 0.18 | tok/s: 183402 | tokens: 8248.4M | train_time: 12.48h | wall_time: 12.54h
+step   4080/4110 | loss: 2.7666 | ppl: 15.9 | lr: 3.00e-05 | grad: 0.19 | tok/s: 183940 | tokens: 8289.0M | train_time: 12.54h | wall_time: 12.60h
+step   4100/4110 | loss: 2.6904 | ppl: 14.7 | lr: 3.00e-05 | grad: 0.18 | tok/s: 183818 | tokens: 8329.6M | train_time: 12.60h | wall_time: 12.66h
+
+-----------------Final Validation-----------------
+Final validation loss: 2.9127
+Final validation perplexity: 18.41
+
+======================================================================
+TRAINING COMPLETE
+======================================================================
+Total steps: 4110
+Total tokens: 8349.9M
+Training time: 12.63h
+Wall time: 12.69h
+Average throughput: 183607 tokens/sec
+Final train loss: 2.7122
+Final val loss: 2.9127
+Best val loss: 2.9092
+Mode: fp8_tensorwise
+Log saved to: experiments/scaling_350M_fp8.csv
+Best checkpoint saved to: checkpoints/scaling_350M_fp8.pt
+======================================================================
+
+[Tue Dec 23 13:21:49 UTC 2025] 350M FP8 complete!
+
+======================================================================
+ALL FP8 SCALING RUNS COMPLETE
+======================================================================
+Finished: Tue Dec 23 13:21:49 UTC 2025
+
+Checkpoints:
+  - checkpoints/scaling_125M_fp8.pt
+  - checkpoints/scaling_250M_fp8.pt
+  - checkpoints/scaling_350M_fp8.pt
+
+Logs:
+  - experiments/scaling_125M_fp8.csv
+  - experiments/scaling_250M_fp8.csv
+  - experiments/scaling_350M_fp8.csv
+
+Next steps:
+  1. Download checkpoints: scp -P <port> root@<host>:checkpoints/*.pt .
+  2. Plot scaling curves from CSV files
+  3. Compare with BF16 baselines
+======================================================================

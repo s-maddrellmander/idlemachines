@@ -162,6 +162,7 @@ class GPTConfig:
         presets = {
             # name: (n_layer, n_embd, n_head, n_kv_head)
             "125M":  (12,  768,  12, 4),
+            "250M":  (14,  1024, 16, 4),
             "350M":  (24,  1024, 16, 4),
             "760M":  (24,  1536, 16, 4),
             "1.5B":  (24,  2048, 16, 4),
@@ -268,7 +269,7 @@ class FileDataLoader:
             with open(f, "rb") as fp:
                 header = np.frombuffer(fp.read(256 * 4), dtype=np.int32)
                 if header[0] == 20240520:
-                    total_tokens += header[2]
+                    total_tokens += int(header[2])
         
         print(f"Data: {len(self.files)} shards, ~{total_tokens/1e9:.2f}B tokens total")
         self.total_tokens = total_tokens
