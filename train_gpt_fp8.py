@@ -47,6 +47,8 @@ except ImportError:
     TORCHAO_AVAILABLE = False
     print("WARNING: torchao not available")
 
+import torch._dynamo
+torch._dynamo.config.optimize_ddp = False
 
 # -----------------------------------------------------------------------------
 # DDP Utilities
@@ -523,15 +525,16 @@ def train(args):
             print0(f"  Warning: Checkpoint not found: {args.resume}")
             print0(f"  Starting from scratch")
     
-    # Compile model (AFTER loading weights, BEFORE DDP)
-    print0(f"\n{'Compilation':-^50}")
-    print0("Compiling model with torch.compile()...")
-    model = torch.compile(model)
     
     # Wrap in DDP (AFTER compile)
     if ddp:
         model = DDP(model, device_ids=[local_rank])
     
+    # Compile model (AFTER loading weights, BEFORE DDP)
+    print0(f"\n{'Compilation':-^50}")
+    print0("Compiling model with torch.compile()...")
+    model = torch.compile(model, fullgraph=False)
+
     # Data loaders (each rank gets different data)
     print0(f"\n{'Data':-^50}")
     try:
