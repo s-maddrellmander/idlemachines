@@ -228,7 +228,6 @@ class GPT(nn.Module):
         self.config = config
         self.transformer = nn.ModuleDict(dict(
             wte=nn.Embedding(config.vocab_size, config.n_embd),
-            wpe=nn.Embedding(config.block_size, config.n_embd),
             h=nn.ModuleList([Block(config) for _ in range(config.n_layer)]),
         ))
         self.lm_head = nn.Linear(config.n_embd, config.vocab_size, bias=False)
@@ -247,9 +246,8 @@ class GPT(nn.Module):
 
     def forward(self, idx, targets=None):
         b, t = idx.size()
-        pos = torch.arange(0, t, dtype=torch.long, device=idx.device)
         
-        x = self.transformer.wte(idx) + self.transformer.wpe(pos)
+        x = self.transformer.wte(idx)
         for block in self.transformer.h:
             x = block(x)
         x = self.rmsnorm(x)

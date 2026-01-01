@@ -22,6 +22,10 @@ Usage:
     # Upload to HuggingFace Hub after processing
     python process_pretrain_data.py --output-dir ./data --tokens 50B \\
         --upload --hf-repo your-username/pretrain-50B-gpt2
+    
+    # Force overwrite existing files
+    python process_pretrain_data.py --upload-only --force \\
+        --output-dir ./data --hf-repo your-username/pretrain-50B-gpt2
 
 Output format:
     data/
@@ -128,7 +132,7 @@ def iter_fineweb_edu() -> Iterator[str]:
     """Iterate over FineWeb-EDU documents."""
     dataset = load_dataset(
         "HuggingFaceFW/fineweb-edu",
-        name="sample-10BT",  # Use sample for faster download, "default" for full
+        name="sample-100BT",  # Use sample for faster download, "default" for full
         split="train",
         streaming=True
     )
@@ -401,12 +405,20 @@ def get_uploaded_files(api: HfApi, repo_id: str, repo_type: str = "dataset") -> 
         return set()
 
 
-def upload_to_hub(output_dir: Path, repo_id: str, private: bool = False, batch_size: int = 5):
+def upload_to_hub(output_dir: Path, repo_id: str, private: bool = False, 
+                  batch_size: int = 5, force: bool = False):
     """
     Upload processed data to HuggingFace Hub with batch commits.
     
     Automatically resumes if interrupted - skips already-uploaded files.
     Batches files together to avoid hitting rate limits (128 commits/hour).
+    
+    Args:
+        output_dir: Directory containing the shard files
+        repo_id: HuggingFace repo ID (e.g., username/dataset-name)
+        private: Whether to make the repo private
+        batch_size: Number of files per commit
+        force: If True, overwrite existing files. If False, skip them.
     """
     if not HF_UPLOAD_AVAILABLE:
         print("Error: huggingface_hub not installed")
@@ -416,9 +428,10 @@ def upload_to_hub(output_dir: Path, repo_id: str, private: bool = False, batch_s
     from huggingface_hub import CommitOperationAdd
     
     print(f"\n{'='*70}")
-    print(f"UPLOADING TO HUGGINGFACE HUB (with resume support)")
+    print(f"UPLOADING TO HUGGINGFACE HUB")
     print(f"Repo: {repo_id}")
     print(f"Batch size: {batch_size} files per commit")
+    print(f"Force overwrite: {force}")
     print(f"{'='*70}\n")
     
     api = HfApi()
@@ -443,11 +456,17 @@ def upload_to_hub(output_dir: Path, repo_id: str, private: bool = False, batch_s
     print(f"  {len(uploaded)} files already in repo\n")
     
     # Filter to files that still need uploading
-    to_upload = [f for f in bin_files if f.name not in uploaded]
+    if force:
+        to_upload = bin_files
+        existing_count = len([f for f in bin_files if f.name in uploaded])
+        if existing_count > 0:
+            print(f"Force mode: will overwrite {existing_count} existing files")
+    else:
+        to_upload = [f for f in bin_files if f.name not in uploaded]
+        if len(to_upload) < len(bin_files):
+            print(f"Skipping {len(bin_files) - len(to_upload)} already-uploaded files")
     
-    if len(to_upload) < len(bin_files):
-        print(f"Skipping {len(bin_files) - len(to_upload)} already-uploaded files")
-        print(f"Uploading {len(to_upload)} remaining files\n")
+    print(f"Uploading {len(to_upload)} files\n")
     
     bin_files = to_upload
     
@@ -516,9 +535,9 @@ def upload_to_hub(output_dir: Path, repo_id: str, private: bool = False, batch_s
         else:
             print("All shards uploaded successfully!\n")
     
-    # Upload manifest
+    # Upload manifest (check force flag)
     manifest_file = output_dir / "manifest.json"
-    if manifest_file.exists() and "manifest.json" not in uploaded:
+    if manifest_file.exists() and (force or "manifest.json" not in uploaded):
         print("Uploading manifest.json...")
         try:
             api.upload_file(
@@ -531,9 +550,9 @@ def upload_to_hub(output_dir: Path, repo_id: str, private: bool = False, batch_s
         except Exception as e:
             print(f"Warning: Could not upload manifest: {e}\n")
     
-    # Create README
+    # Create README (check force flag)
     readme_file = output_dir / "README.md"
-    if readme_file.exists() and "README.md" not in uploaded:
+    if readme_file.exists() and (force or "README.md" not in uploaded):
         print("Uploading README.md...")
         try:
             api.upload_file(
@@ -718,6 +737,10 @@ Examples:
   # Resume interrupted upload
   python process_pretrain_data.py --upload-only \\
       --output-dir ./data --hf-repo username/pretrain-50B-gpt2
+  
+  # Force overwrite existing files
+  python process_pretrain_data.py --upload-only --force \\
+      --output-dir ./data --hf-repo username/pretrain-50B-gpt2
 """
     )
     
@@ -741,6 +764,8 @@ Examples:
                         help='Make HF repo private')
     parser.add_argument('--batch-size', type=int, default=5,
                         help='Files per batch/commit (default: 5)')
+    parser.add_argument('--force', action='store_true',
+                        help='Overwrite existing files (default: skip)')
     
     args = parser.parse_args()
     
@@ -750,7 +775,7 @@ Examples:
         if not args.hf_repo:
             print("Error: --hf-repo required for upload")
             return
-        upload_to_hub(output_dir, args.hf_repo, args.private, args.batch_size)
+        upload_to_hub(output_dir, args.hf_repo, args.private, args.batch_size, args.force)
         return
     
     if not HF_AVAILABLE:
@@ -779,7 +804,7 @@ Examples:
         if not args.hf_repo:
             print("\nWarning: --hf-repo not specified, skipping upload")
         else:
-            upload_to_hub(output_dir, args.hf_repo, args.private, args.batch_size)
+            upload_to_hub(output_dir, args.hf_repo, args.private, args.batch_size, args.force)
 
 
 if __name__ == "__main__":

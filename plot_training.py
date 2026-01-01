@@ -143,7 +143,8 @@ def plot_loss_curves(df, output_dir, smooth_window=50):
     ax1.set_ylabel('Training Loss')
     ax1.set_title('Training Loss vs Tokens Processed')
     ax1.legend(frameon=True, fancybox=True, shadow=True)
-    ax1.set_ylim(bottom=2, top=12)
+    bottom = df['loss'].min() * 0.95 if df['loss'].min() > 0 else 0
+    ax1.set_ylim(bottom=bottom, top=12)
     
     # Right: Loss vs Wall Time
     ax2 = axes[1]
@@ -163,7 +164,8 @@ def plot_loss_curves(df, output_dir, smooth_window=50):
     ax2.set_ylabel('Training Loss')
     ax2.set_title('Training Loss vs Wall Time')
     ax2.legend(frameon=True, fancybox=True, shadow=True)
-    ax2.set_ylim(bottom=2, top=12)
+    bottom = df['loss'].min() * 0.95 if df['loss'].min() > 0 else 0
+    ax2.set_ylim(bottom=bottom, top=12)
     
     plt.tight_layout()
     plt.savefig(output_dir / 'loss_curves.png', dpi=150, bbox_inches='tight')
@@ -196,7 +198,8 @@ def plot_perplexity(df, output_dir, smooth_window=50):
     ax.set_title('Training Perplexity')
     ax.set_yscale('log')
     ax.legend(frameon=True, fancybox=True, shadow=True)
-    ax.set_ylim(bottom=50, top=1000)
+    bottom = df['perplexity'].min() * 0.95 if df['perplexity'].min() > 0 else 5
+    ax.set_ylim(bottom=bottom, top=1000)
     
     plt.tight_layout()
     plt.savefig(output_dir / 'perplexity.png', dpi=150, bbox_inches='tight')
@@ -320,7 +323,8 @@ def plot_summary_dashboard(df, output_dir):
     ax1.set_ylabel('Loss')
     ax1.set_title('Training Loss', fontweight='bold')
     ax1.legend()
-    ax1.set_ylim(4, 12)
+    bottom = df['loss'].min() * 0.95 if df['loss'].min() > 0 else 0
+    ax1.set_ylim(bottom=bottom, top=12)
     
     # 2. Stats box (top-right)
     ax2 = fig.add_subplot(gs[0, 2])
@@ -401,7 +405,8 @@ def plot_summary_dashboard(df, output_dir):
     ax6.set_xlabel('Hours')
     ax6.set_ylabel('Loss')
     ax6.set_title('Loss vs Wall Time', fontweight='bold')
-    ax6.set_ylim(4, 12)
+    bottom = df['loss'].min() * 0.95 if df['loss'].min() > 0 else 0
+    ax6.set_ylim(bottom=bottom, top=12)
     
     # 7. Perplexity (bottom-center)
     ax7 = fig.add_subplot(gs[2, 1])
@@ -564,7 +569,8 @@ def plot_validation_loss(df, output_dir, smooth_window=10):
     ax1.set_ylabel('Loss')
     ax1.set_title('Training vs Validation Loss')
     ax1.legend(frameon=True, fancybox=True, shadow=True)
-    ax1.set_ylim(bottom=2)
+    bottom = df['loss'].min() * 0.95 if df['loss'].min() > 0 else 0
+    ax1.set_ylim(bottom=bottom)
     
     # Right: Validation loss comparison
     ax2 = axes[1]
