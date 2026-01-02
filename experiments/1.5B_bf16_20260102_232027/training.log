@@ -1,0 +1,60 @@
+W0102 23:20:28.965000 740746 site-packages/torch/distributed/run.py:803] 
+W0102 23:20:28.965000 740746 site-packages/torch/distributed/run.py:803] *****************************************
+W0102 23:20:28.965000 740746 site-packages/torch/distributed/run.py:803] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0102 23:20:28.965000 740746 site-packages/torch/distributed/run.py:803] *****************************************
+======================================================================
+FP8 TRAINING - DDP MULTI-GPU
+======================================================================
+
+------------------Configuration-------------------
+Device: NVIDIA H200 x 8
+DDP: True (rank 0/8)
+Mode: bf16
+Steps: 28610 (optimizer steps)
+Micro batch size: 32 per GPU
+Gradient accumulation: 4
+Effective batch size: 1024 sequences
+Sequence length: 1024
+Tokens per step: 1,048,576
+Learning rate: 0.0003 (warmup: 572 steps, min: 3e-05)
+Validation every: 500 steps
+Model preset: 1.5B
+
+----------------------Model-----------------------
+Parameters: 1.56B (1562.7M)
+Layers: 24
+Heads: 16 (KV: 4)
+Embed dim: 2048
+NCCL version 2.27.7+cuda13.0
+
+-------------------Compilation--------------------
+Compiling model with torch.compile()...
+
+-----------------------Data-----------------------
+Data: 499 shards, ~48.85B tokens total
+Data: 1 shards, ~0.10B tokens total
+[rank2]:W0102 23:20:57.002000 740853 site-packages/torch/_logging/_internal.py:1199] [0/0] Profiler function <class 'torch.autograd.profiler.record_function'> will be ignored
+Train data: data/pretrain/train_*.bin
+Val data: data/pretrain/val_*.bin
+Tokens per optimizer step: 1,048,576
+Total tokens: 29999.8M (30.00B)
+[rank1]:W0102 23:20:57.003000 740852 site-packages/torch/_logging/_internal.py:1199] [0/0] Profiler function <class 'torch.autograd.profiler.record_function'> will be ignored
+[rank5]:W0102 23:20:57.003000 740856 site-packages/torch/_logging/_internal.py:1199] [0/0] Profiler function <class 'torch.autograd.profiler.record_function'> will be ignored
+
+---------------------Logging----------------------
+Log file: experiments/1.5B_bf16_20260102_232027/train_bf16_1.5B.csv
+Checkpoint: experiments/1.5B_bf16_20260102_232027/checkpoint_bf16_1.5B.pt
+
+======================================================================
+Starting training...
+======================================================================
+
+[rank6]:W0102 23:20:57.007000 740857 site-packages/torch/_logging/_internal.py:1199] [0/0] Profiler function <class 'torch.autograd.profiler.record_function'> will be ignored
+[rank0]:W0102 23:20:57.015000 740851 site-packages/torch/_logging/_internal.py:1199] [0/0] Profiler function <class 'torch.autograd.profiler.record_function'> will be ignored
+[rank3]:W0102 23:20:57.018000 740854 site-packages/torch/_logging/_internal.py:1199] [0/0] Profiler function <class 'torch.autograd.profiler.record_function'> will be ignored
+[rank7]:W0102 23:20:57.025000 740858 site-packages/torch/_logging/_internal.py:1199] [0/0] Profiler function <class 'torch.autograd.profiler.record_function'> will be ignored
+[rank4]:W0102 23:20:57.025000 740855 site-packages/torch/_logging/_internal.py:1199] [0/0] Profiler function <class 'torch.autograd.profiler.record_function'> will be ignored
+step      1/28610 | loss: 10.7512 | ppl: 46686.6 | lr: 5.24e-07 | grad: 12.42 | tok/s: 33200 | tokens: 1.0M | train_time: 31.6s | wall_time: 31.6s
+step     10/28610 | loss: 10.2564 | ppl: 28465.3 | lr: 5.24e-06 | grad: 4.40 | tok/s: 447687 | tokens: 10.5M | train_time: 52.7s | wall_time: 52.7s
+step     20/28610 | loss: 9.7442 | ppl: 17055.1 | lr: 1.05e-05 | grad: 4.56 | tok/s: 443511 | tokens: 21.0M | train_time: 1.3m | wall_time: 1.3m
+step     30/28610 | loss: 9.3954 | ppl: 12033.3 | lr: 1.57e-05 | grad: 4.46 | tok/s: 440214 | tokens: 31.5M | train_time: 1.7m | wall_time: 1.7m

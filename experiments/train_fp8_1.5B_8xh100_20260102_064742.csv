@@ -1,0 +1,1 @@
+step,train_loss,val_loss,perplexity,val_perplexity,tokens_per_sec,step_time_ms,train_time_ms,total_tokens,elapsed_time,train_time_total,lr,grad_norm,mode,model_size,batch_size,grad_accum,effective_batch,num_params,world_size

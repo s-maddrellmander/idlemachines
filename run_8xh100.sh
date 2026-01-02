@@ -59,7 +59,7 @@ case $MODEL_SIZE in
         CHINCHILLA_TOKENS=15000000000  # 15B tokens
         ;;
     "1.5B")
-        BATCH_SIZE=64          # H200 can do 48 vs H100's 32
+        BATCH_SIZE=32          # H200 can do 48 vs H100's 32
         GRAD_ACCUM=4           # Less accum needed with larger batch
         LR=3e-4
         MIN_LR=3e-5

@@ -1,0 +1,14 @@
+Model: 1.5B
+Mode: bf16
+Steps: 28610
+Batch size per GPU: 32
+Gradient accumulation: 4
+World size: 8
+Sequence length: 1024
+Effective batch: 1024
+Tokens per step: 1048576
+Total tokens: 29.99B
+Learning rate: 3e-4 → 3e-5
+Warmup fraction: 0.02
+Validation every: 500
+Started: Fri Jan  2 23:20:27 UTC 2026

@@ -1,0 +1,94 @@
+W0102 07:02:48.564000 115434 site-packages/torch/distributed/run.py:803] 
+W0102 07:02:48.564000 115434 site-packages/torch/distributed/run.py:803] *****************************************
+W0102 07:02:48.564000 115434 site-packages/torch/distributed/run.py:803] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0102 07:02:48.564000 115434 site-packages/torch/distributed/run.py:803] *****************************************
+/venv/fp8/bin/python: can't open file '/workspace/idlemachines/train_gpt_fp8_optimized.py': [Errno 2] No such file or directory
+/venv/fp8/bin/python: can't open file '/workspace/idlemachines/train_gpt_fp8_optimized.py': [Errno 2] No such file or directory
+/venv/fp8/bin/python: can't open file '/workspace/idlemachines/train_gpt_fp8_optimized.py': [Errno 2] No such file or directory
+/venv/fp8/bin/python: can't open file '/workspace/idlemachines/train_gpt_fp8_optimized.py': [Errno 2] No such file or directory
+/venv/fp8/bin/python: can't open file '/workspace/idlemachines/train_gpt_fp8_optimized.py': [Errno 2] No such file or directory
+/venv/fp8/bin/python: can't open file '/workspace/idlemachines/train_gpt_fp8_optimized.py': [Errno 2] No such file or directory
+/venv/fp8/bin/python: can't open file '/workspace/idlemachines/train_gpt_fp8_optimized.py': [Errno 2] No such file or directory
+/venv/fp8/bin/python: can't open file '/workspace/idlemachines/train_gpt_fp8_optimized.py': [Errno 2] No such file or directory
+E0102 07:02:51.908000 115434 site-packages/torch/distributed/elastic/multiprocessing/api.py:882] failed (exitcode: 2) local_rank: 0 (pid: 115553) of binary: /venv/fp8/bin/python
+Traceback (most recent call last):
+  File "/venv/fp8/bin/torchrun", line 7, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/venv/fp8/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 357, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/venv/fp8/lib/python3.12/site-packages/torch/distributed/run.py", line 936, in main
+    run(args)
+  File "/venv/fp8/lib/python3.12/site-packages/torch/distributed/run.py", line 927, in run
+    elastic_launch(
+  File "/venv/fp8/lib/python3.12/site-packages/torch/distributed/launcher/api.py", line 156, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/venv/fp8/lib/python3.12/site-packages/torch/distributed/launcher/api.py", line 293, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+train_gpt_fp8_optimized.py FAILED
+------------------------------------------------------------
+Failures:
+[1]:
+  time      : 2026-01-02_07:02:51
+  host      : 497514931b29
+  rank      : 1 (local_rank: 1)
+  exitcode  : 2 (pid: 115554)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+[2]:
+  time      : 2026-01-02_07:02:51
+  host      : 497514931b29
+  rank      : 2 (local_rank: 2)
+  exitcode  : 2 (pid: 115555)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+[3]:
+  time      : 2026-01-02_07:02:51
+  host      : 497514931b29
+  rank      : 3 (local_rank: 3)
+  exitcode  : 2 (pid: 115556)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+[4]:
+  time      : 2026-01-02_07:02:51
+  host      : 497514931b29
+  rank      : 4 (local_rank: 4)
+  exitcode  : 2 (pid: 115557)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+[5]:
+  time      : 2026-01-02_07:02:51
+  host      : 497514931b29
+  rank      : 5 (local_rank: 5)
+  exitcode  : 2 (pid: 115558)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+[6]:
+  time      : 2026-01-02_07:02:51
+  host      : 497514931b29
+  rank      : 6 (local_rank: 6)
+  exitcode  : 2 (pid: 115559)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+[7]:
+  time      : 2026-01-02_07:02:51
+  host      : 497514931b29
+  rank      : 7 (local_rank: 7)
+  exitcode  : 2 (pid: 115560)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-01-02_07:02:51
+  host      : 497514931b29
+  rank      : 0 (local_rank: 0)
+  exitcode  : 2 (pid: 115553)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+[W102 07:02:52.892534016 AllocatorConfig.cpp:28] Warning: PYTORCH_CUDA_ALLOC_CONF is deprecated, use PYTORCH_ALLOC_CONF instead (function operator())

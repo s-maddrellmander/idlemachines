@@ -191,7 +191,6 @@ class GPT(torch.nn.Module):
         self.config = config
         self.transformer = torch.nn.ModuleDict(dict(
             wte=torch.nn.Embedding(config.vocab_size, config.n_embd),
-            wpe=torch.nn.Embedding(config.block_size, config.n_embd),
             h=torch.nn.ModuleList([Block(config) for _ in range(config.n_layer)]),
         ))
         self.lm_head = torch.nn.Linear(config.n_embd, config.vocab_size, bias=False)
@@ -202,7 +201,7 @@ class GPT(torch.nn.Module):
         b, t = idx.size()
         pos = torch.arange(0, t, dtype=torch.long, device=idx.device)
         
-        x = self.transformer.wte(idx) + self.transformer.wpe(pos)
+        x = self.transformer.wte(idx) 
         for block in self.transformer.h:
             x = block(x)
         x = self.rmsnorm(x)
@@ -735,7 +734,7 @@ Examples:
                         help="Data type for model")
     parser.add_argument("--limit", type=int, default=None,
                         help="Limit samples per task (for debugging)")
-    parser.add_argument("--num-fewshot", type=int, default=0,
+    parser.add_argument("--num-fewshot", type=int, default=5,
                         help="Number of few-shot examples")
     
     args = parser.parse_args()

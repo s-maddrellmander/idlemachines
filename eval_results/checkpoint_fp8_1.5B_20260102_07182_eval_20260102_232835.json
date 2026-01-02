@@ -1,0 +1,70 @@
+{
+  "checkpoint": "checkpoints/checkpoint_fp8_1.5B_20260102_07182.pt",
+  "checkpoint_name": "checkpoint_fp8_1.5B_20260102_07182",
+  "step": 15000,
+  "val_loss": 2.137849807739258,
+  "train_loss": 2.1285412311553955,
+  "model_config": {
+    "n_layer": 24,
+    "n_embd": 2048,
+    "n_head": 16,
+    "n_kv_head": 4
+  },
+  "training_args": {
+    "steps": 15000,
+    "batch_size": 64,
+    "grad_accum": 4,
+    "seq_len": 1024,
+    "lr": 0.0003,
+    "min_lr": 3e-05,
+    "warmup_frac": 0.02,
+    "warmup_steps": 300,
+    "weight_decay": 0.1,
+    "grad_clip": 1.0,
+    "model_size": "1.5B",
+    "train_data": "data/pretrain/train_*.bin",
+    "val_data": "data/pretrain/val_*.bin",
+    "val_every": 500,
+    "val_batches": 50,
+    "log_every": 10,
+    "log_file": "experiments/1.5B_fp8_20260102_071825/train_fp8_1.5B.csv",
+    "checkpoint_path": "experiments/1.5B_fp8_20260102_071825/checkpoint_fp8_1.5B.pt",
+    "resume": null,
+    "fp8_recipe": "tensorwise",
+    "no_fp8": false,
+    "use_fp8": true
+  },
+  "eval_config": {
+    "device": "auto",
+    "dtype": "bfloat16",
+    "batch_size": 8,
+    "num_fewshot": 0,
+    "limit": 100
+  },
+  "timestamp": "2026-01-02T23:28:35.027385",
+  "tasks": [
+    "hellaswag",
+    "arc_easy"
+  ],
+  "scores": {
+    "arc_easy": 0.55,
+    "hellaswag": 0.5
+  },
+  "mean_accuracy": 0.525,
+  "full_results": {
+    "arc_easy": {
+      "alias": "arc_easy",
+      "acc,none": 0.63,
+      "acc_stderr,none": 0.048523658709390974,
+      "acc_norm,none": 0.55,
+      "acc_norm_stderr,none": 0.05
+    },
+    "hellaswag": {
+      "alias": "hellaswag",
+      "acc,none": 0.4,
+      "acc_stderr,none": 0.0492365963917331,
+      "acc_norm,none": 0.5,
+      "acc_norm_stderr,none": 0.050251890762960605
+    }
+  }
+}
