@@ -1,0 +1,15 @@
+Model: 250M
+Mode: fp8
+Steps: 15258
+Batch size per GPU: 80
+Gradient accumulation: 4
+World size: 1
+Sequence length: 1024
+Effective batch: 320
+Tokens per step: 327680
+Total tokens: 4.99B
+Learning rate: 3e-4 → 3e-5
+Warmup fraction: 0.02
+Validation every: 500
+Started: Thu Jan  8 05:41:34 UTC 2026
+Completed: Thu Jan  8 11:00:11 UTC 2026

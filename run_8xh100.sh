@@ -31,24 +31,24 @@ STEPS_OR_CHINCHILLA=${3:-chinchilla}
 # Model-specific optimal settings for H200
 case $MODEL_SIZE in
     "125M")
-        BATCH_SIZE=128          # H200 can handle much larger batches for small models
-        GRAD_ACCUM=2           # Reduce accum since batch is larger
-        LR=6e-4
-        MIN_LR=6e-5
-        CHINCHILLA_TOKENS=2500000000   # 2.5B tokens (20x params)
+        BATCH_SIZE=64    # H200 can handle much larger batches for small models
+        GRAD_ACCUM=32           # Reduce accum since batch is larger
+        LR=3e-4
+        MIN_LR=3e-5
+        CHINCHILLA_TOKENS=2800000000   # 2.5B tokens (20x params)
         ;;
     "250M")
-        BATCH_SIZE=64
+        BATCH_SIZE=80
         GRAD_ACCUM=4
-        LR=5e-4
-        MIN_LR=5e-5
+        LR=3e-4
+        MIN_LR=3e-5
         CHINCHILLA_TOKENS=5000000000   # 5B tokens
         ;;
     "350M")
-        BATCH_SIZE=48
+        BATCH_SIZE=64
         GRAD_ACCUM=4
-        LR=4e-4
-        MIN_LR=4e-5
+        LR=3e-4
+        MIN_LR=3e-5
         CHINCHILLA_TOKENS=7000000000   # 7B tokens
         ;;
     "760M")
@@ -68,8 +68,8 @@ case $MODEL_SIZE in
     "3B")
         BATCH_SIZE=32
         GRAD_ACCUM=8
-        LR=2e-4
-        MIN_LR=2e-5
+        LR=3e-4
+        MIN_LR=3e-5
         CHINCHILLA_TOKENS=60000000000  # 60B tokens
         ;;
     *)
@@ -80,7 +80,7 @@ case $MODEL_SIZE in
 esac
 
 SEQ_LEN=1024
-WORLD_SIZE=8
+WORLD_SIZE=1
 
 # Calculate tokens per step
 TOKENS_PER_STEP=$((BATCH_SIZE * GRAD_ACCUM * WORLD_SIZE * SEQ_LEN))
